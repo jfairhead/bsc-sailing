@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BSC Sailing Calendar app, version 2.4.0 (2026-09-20) -->
+<!-- BSC Sailing Calendar app, version 2.5.1 (2026-09-20) -->
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
@@ -69,6 +69,10 @@ p { margin: 0; }
 .tok .lbl { min-width: 0; overflow-wrap: anywhere; }
 .num { display: inline-block; min-width: 1.5em; padding: 0 5px; border-radius: 4px; background: var(--water); color: var(--bg); font-weight: 700; font-size: 0.8rem; text-align: center; }
 .tok.mine .num { background: var(--buoy); }
+.tok .fl { font-weight: 700; }
+.tok.mine .fl { color: var(--buoy); }
+.tok.race .lbl, .tok.bjrc .lbl { font-weight: 400; }
+.tok.train .fl { font-weight: 400; color: var(--muted); }
 .tok .t { color: var(--water); font-weight: 700; }
 .tok .f { color: var(--muted); font-size: 0.85rem; }
 .tok .tag { font-size: 0.72rem; font-weight: 700; padding: 0 6px; border-radius: 3px; background: var(--water-soft); color: var(--ink); }
@@ -160,9 +164,18 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
 @keyframes rise { from { transform: translateY(28px); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { dialog#sheet[open] { animation: none; } }
 .sheet-in { padding: 16px 18px 20px; }
-.sheet-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.sheet-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.sheet-top .pill { flex: none; }
+.firststart { margin: 6px 0 2px; font-size: 1.05rem; }
+.firststart b { font-family: var(--display); font-size: 1.35rem; color: var(--water); }
+.tide-nums { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 4px 0 8px; }
+.tide-nums b { display: block; font-family: var(--display); font-size: 1.7rem; line-height: 1.1; }
+.tide-nums span { color: var(--muted); font-size: 0.85rem; }
+.listfoot { margin: 18px 0 0; text-align: center; }
+.listfoot[hidden] { display: none; }
+.listfoot .pill { padding: 9px 18px; }
 .sheet-when { color: var(--buoy); font-weight: 700; }
-#sheet-title { font-family: var(--display); font-size: clamp(1.5rem, 6vw, 2rem); line-height: 1.1; letter-spacing: -0.015em; margin: 8px 0 0; }
+#sheet-title { font-family: var(--display); font-size: clamp(1.5rem, 6vw, 2rem); line-height: 1.1; letter-spacing: -0.015em; margin: 0; }
 .sheet-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0 4px; padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .sheet-facts b { display: block; font-family: var(--display); font-size: 1.3rem; line-height: 1.15; }
 .sheet-facts span { color: var(--muted); font-size: 0.85rem; }
@@ -170,12 +183,11 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
 .sheet p { margin: 0 0 6px; }
 .sheet .muted { color: var(--muted); }
 .list { list-style: none; margin: 0; padding: 0; }
-.list li { display: grid; grid-template-columns: 2.2em 1fr; gap: 2px 10px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.list li { padding: 7px 0; border-bottom: 1px solid var(--line); }
 .list li:last-child { border-bottom: 0; }
-.list .n { text-align: center; }
-.list .n .num { min-width: 1.7em; }
-.list li.mine .num { background: var(--buoy); }
-.list .main { font-weight: 700; }
+.list .fl { font-weight: 700; }
+.list li.mine .fl { color: var(--buoy); }
+.list li.solo .main { font-weight: 700; }
 .list .sub2 { color: var(--muted); font-size: 0.9rem; }
 .list .t { color: var(--water); font-weight: 700; }
 .scale { height: 10px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 10px 0 4px; }
@@ -241,19 +253,19 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
     <div class="row-scroll" id="chips" role="group" aria-label="Type of day"></div>
     <div class="toggles">
       <label><input type="checkbox" id="hidePast" checked> Hide past days</label>
-      <label><input type="checkbox" id="showNR"> Show no-racing days</label>
+      <label><input type="checkbox" id="showNR"> Show days with no club racing</label>
       <label><input type="checkbox" id="showWeekly" checked> Weekly sessions</label>
     </div>
     <p class="count" id="count"></p>
-    <p class="hint" id="calnote" role="status"></p>
   </div>
 
   <main id="list"><p class="empty">Loading the programme…</p></main>
+  <div class="listfoot" id="listfoot" hidden><button class="pill" type="button" id="listcal"></button><p class="hint" id="calnote" role="status"></p></div>
 
   <section class="check" id="check" hidden></section>
 
   <div class="foot" id="foot" hidden>
-    <p>Numbers show the start order (1 = first to start). HW is high water; a ≈ before a time or height means it isn't printed in the programme and is estimated. "Start TBC" means the coach or instructor sets the start.</p>
+    <p>Races are listed by fleet in start order. HW is high water; a ≈ before a time or height means it isn't printed in the programme and is estimated. "Start TBC" means the coach or instructor sets the start.</p>
     <p>Add to calendar saves a file that opens in your phone's Calendar. The programme gives start times but not finish times, so timed entries last 3 hours unless a time range is shown, and "start TBC" items are added as all-day entries.</p>
     <p>Unofficial. Check the club website and newsletters for updates.</p>
     <p class="version" id="version"></p>
@@ -264,10 +276,9 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
 <dialog id="sheet" class="sheet" aria-labelledby="sheet-title">
   <div class="sheet-in">
     <div class="sheet-top">
-      <p class="sheet-when" id="sheet-when"></p>
+      <h2 id="sheet-title"></h2>
       <button class="pill" type="button" id="sheet-close">Close</button>
     </div>
-    <h2 id="sheet-title"></h2>
     <div id="sheet-body"></div>
     <div class="sheet-cal"><button class="pill" type="button" id="sheet-cal">Add to calendar</button><p class="hint" id="sheet-calnote" role="status"></p></div>
     <div class="sheet-nav">
@@ -283,7 +294,7 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
    only needs a new programme.csv (same column headings).
 ------------------------------------------------------------------ */
 const CONFIG = {
-  version: "2.4.0", released: "2026-09-20",   // bump both here and in sw.js, and add a line to CHANGELOG.md
+  version: "2.5.1", released: "2026-09-20",   // bump both here and in sw.js, and add a line to CHANGELOG.md
   filePattern: "programme-{year}.csv",  // one file per season: programme-2026.csv, programme-2027.csv, ...
   yearsBack: 1, yearsAhead: 2,          // which years to look for around the current year
   legacyFile: "programme.csv",          // an older single file: used for its own year if no dated file covers it
@@ -410,8 +421,12 @@ function groupDay(day, opts) {
     const label = g.series ? (g.series + (g.nums ? " " + g.nums : "")) : (g.event + (g.nums ? " " + g.nums : ""));
     return Object.assign(g, { all, label, tag: g.series ? g.event : "", min: Math.min(...g.rows.map(x => x.order)), orderText: orderText(g.rows), fleetsText: fleetsText(g.fleets) });
   }).sort((a, b) => a.min - b.min || a.label.localeCompare(b.label));
-  return { racing, events: [...evs.values()], training: [...train.values()], noRacing };
+  return { racing, events: sortEvents([...evs.values()]), training: [...train.values()], noRacing };
 }
+const isBJRC = i => i.kind === "event" && /^BJRC/.test(i.label);
+function hasBJRC(it) { return it.events.some(isBJRC); }
+function eventRank(i) { if (isBJRC(i)) return 3; if (/cruise|cruiser/i.test(i.label)) return 2; if (i.tag === "Open meeting" || /^Open day/i.test(i.label)) return 0; return 1; }
+function sortEvents(list) { return list.map((x, i) => [x, i]).sort((a, b) => eventRank(a[0]) - eventRank(b[0]) || a[1] - b[1]).map(x => x[0]); }
 function forMe(item, sel) {
   if (!sel.length) return true;
   if (item.kind === "race") return item.fleets.some(f => sel.includes(f));
@@ -434,7 +449,7 @@ function visibleItems(day) {
 function hasContent(it) { return it.racing.length || it.events.length || it.training.length; }
 function noRacingText(day, it) {
   if (state.fleets.length && !it.racing.length && groupDay(day, { weekly: true }).racing.length) return "Not racing for " + state.fleets.join(", ");
-  return "No racing";
+  return "No club racing";
 }
 function dayStart(day) {
   const r = day.rows.find(x => x.order && /^\d\d:\d\d$/.test(x.start));
@@ -442,26 +457,27 @@ function dayStart(day) {
 }
 
 /* ---------- tokens ---------- */
+function fleetNames(item) {
+  const sel = mySel(item);
+  return item.all ? item.fleetsText : (state.fleets.length && sel.length ? sel.map(x => x.fleet).join(", ") : item.fleets.join(", "));
+}
 function tokenEl(item) {
   const t = el("li", "tok " + item.kind);
   if (item.kind === "race") {
-    const sel = mySel(item);
-    if (sel.length) t.classList.add("mine");
-    t.appendChild(el("span", "num", sel.length ? orderText(sel) : (item.all ? "All" : item.orderText)));
+    if (mySel(item).length) t.classList.add("mine");
+    t.appendChild(el("span", "fl", fleetNames(item) + ":"));
     t.appendChild(el("span", "lbl", item.label));
     if (item.tag) t.appendChild(el("span", "tag", item.tag));
-    if (!state.fleets.length) {
-      if (item.all) t.appendChild(el("span", "f", item.fleetsText));
-      else if (item.fleets.length > 1) t.appendChild(el("span", "f", item.fleets.join(", ")));
-    } else if (item.all) t.appendChild(el("span", "f", "all fleets"));
-    else if (state.fleets.length > 1) t.appendChild(el("span", "f", sel.map(x => x.fleet).join(", ")));
   } else if (item.kind === "event") {
-    t.appendChild(el("span", "lbl", item.label));
+    if (isBJRC(item)) {
+      t.classList.add("bjrc");
+      t.appendChild(el("span", "fl", "BJRC:")); t.appendChild(el("span", "lbl", item.label.replace(/^BJRC\s*/, "")));
+    } else t.appendChild(el("span", "lbl", item.label));
     if (item.tag) t.appendChild(el("span", "tag", item.tag));
     if (item.start) t.appendChild(el("span", "t", item.start === "TBC" ? "start TBC" : item.start));
     if (item.fleets.length) t.appendChild(el("span", "f", fleetsText(item.fleets)));
   } else {
-    t.appendChild(el("span", "num", "T"));
+    t.appendChild(el("span", "fl", "Training:"));
     t.appendChild(el("span", "lbl", item.label));
     if (item.tag) t.appendChild(el("span", "tag", item.tag));
     t.appendChild(el("span", "t", item.start === "TBC" || !item.start ? "start TBC" : item.start));
@@ -486,9 +502,20 @@ function tideBlock(day) {
 
 /* ---------- next on ---------- */
 function isToday(d) { return d.date.getTime() === today.getTime(); }
+function eventStartMin(d, it) {
+  const times = [], st = dayStart(d);
+  if (it.racing.length && st) times.push(toMin(st));
+  [...it.events, ...it.training].forEach(i => { if (/^\d\d:\d\d$/.test(i.start)) times.push(toMin(i.start)); });
+  return times.length ? Math.min(...times) : 9 * 60;      // all-day or TBC items count as starting at 09:00
+}
+function stillOn(d, it) {
+  if (!isToday(d)) return true;
+  const n = new Date();
+  return n.getHours() * 60 + n.getMinutes() <= eventStartMin(d, it) + 8 * 60;
+}
 function renderNext() {
   const box = $("next"); box.textContent = "";
-  const up = DAYS.filter(d => d.date >= today).map(d => ({ d, it: visibleItems(d) })).filter(x => hasContent(x.it));
+  const up = DAYS.filter(d => d.date >= today).map(d => ({ d, it: visibleItems(d) })).filter(x => hasContent(x.it) && stillOn(x.d, x.it));
   box.hidden = false;
   if (!up.length) {
     box.appendChild(el("p", "date-big", "The " + YEAR + " programme has finished."));
@@ -505,7 +532,7 @@ function renderNext() {
   box.appendChild(tokenList(it));
   const facts = el("div", "next-facts");
   const st = dayStart(d);
-  const f1 = el("div", "fact"); f1.appendChild(el("b", "", it.racing.length ? (st || "TBC") : "No racing")); f1.appendChild(el("span", "", it.racing.length ? "First start" : (state.fleets.length && st ? "for " + state.fleets.join(", ") : "Club racing")));
+  const f1 = el("div", "fact"); f1.appendChild(el("b", "", it.racing.length ? (st || "TBC") : "No club racing")); f1.appendChild(el("span", "", it.racing.length ? "First start" : (hasBJRC(it) ? "BJRC racing" : (state.fleets.length && st ? "for " + state.fleets.join(", ") : ""))));
   const f2 = el("div", "fact"); f2.appendChild(el("b", "", d.hw ? (d.est ? "≈" : "") + d.hw : "–")); f2.appendChild(el("span", "", "High water" + (isNaN(d.ht) ? "" : ", " + (d.est ? "≈" : "") + d.ht.toFixed(1) + " m")));
   facts.append(f1, f2, pillBtn("See details", () => openDetail(d, up.map(x => x.d))));
   box.appendChild(facts);
@@ -515,7 +542,7 @@ function renderNext() {
 function syncPills(box, id) { box.querySelectorAll(".pill").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === id ? "true" : "false")); }
 const CHIPS = [
   { id: "all", label: "All days", test: (d, it) => true },
-  { id: "racing", label: "Racing", test: (d, it) => it.racing.length > 0 },
+  { id: "racing", label: "Racing", test: (d, it) => it.racing.length > 0 || hasBJRC(it) },
   { id: "gp", label: "Grand Prix", test: (d, it) => d.gp },
   { id: "training", label: "Training", test: (d, it) => it.training.length > 0 },
   { id: "events", label: "Events", test: (d, it) => it.events.some(e => !CONFIG.weekly.includes(e.label) && !CONFIG.weekly.includes(e.tag)) }
@@ -594,7 +621,7 @@ function initControls() {
   $("showWeekly").addEventListener("change", () => { renderNext(); render(); });
 }
 function fleetHint() {
-  $("fleethint").textContent = state.fleets.length ? "Showing " + state.fleets.join(", ") + ". Tap a fleet again to remove it, or Reset for all fleets. The red number is your start order (1 = first)." : "Pick one or more fleets to see only their races and start order.";
+  $("fleethint").textContent = state.fleets.length ? "Showing " + state.fleets.join(", ") + ". Tap a fleet again to remove it, or Reset for all fleets. Your fleets are shown in red." : "Pick one or more fleets to see only their races and start order.";
 }
 
 /* ---------- suggestions ---------- */
@@ -651,11 +678,12 @@ function render() {
   const count = $("count"); count.textContent = "";
   count.appendChild(el("span", "", plural(shown.length, "day") + " shown." + (clickable.length ? " Tap a day for details." : "")));
   if (preset) count.appendChild(pillBtn("Clear filter: " + preset.label, () => { state.preset = null; render(); }));
-  if (clickable.length) count.appendChild(pillBtn("Add " + plural(clickable.length, "day") + " to calendar", () => exportDays(clickable, $("calnote"))));
   $("calnote").textContent = "";
+  const lf = $("listfoot");
+  if (clickable.length) { lf.hidden = false; const cb = $("listcal"); cb.textContent = "Add " + plural(clickable.length, "day") + " to calendar"; cb.onclick = () => exportDays(clickable, $("calnote")); } else lf.hidden = true;
   const list = $("list"); list.textContent = "";
   if (!shown.length) {
-    const e = el("div", "empty", "Nothing matches. Clear the search, pick another month or fleet, or turn on Show no-racing days.");
+    const e = el("div", "empty", "Nothing matches. Clear the search, pick another month or fleet, or turn on Show days with no club racing.");
     e.appendChild(document.createElement("br"));
     const b = pillBtn("Reset filters", () => {
       $("q").value = ""; state.month = "all"; state.chip = "all"; state.preset = null; state.fleets = []; saveFleets();
@@ -764,66 +792,71 @@ function openDetail(day, list) {
   navIdx = Math.max(0, nav.findIndex(x => x.iso === day.iso));
   fillSheet(); if (!sheet.open) sheet.showModal(); document.body.classList.add("lock");
 }
-function listRow(numText, main, sub, time, mine) {
-  const li = el("li", mine ? "mine" : "");
-  const n = el("div", "n"); if (numText) n.appendChild(el("span", "num", numText)); li.appendChild(n);
-  const c = el("div", "");
-  const m = el("div", "main", main); if (time) { m.appendChild(document.createTextNode("  ")); m.appendChild(el("span", "t", time)); } c.appendChild(m);
-  if (sub) c.appendChild(el("div", "sub2", sub));
-  li.appendChild(c); return li;
+function listRow(fleetText, label, sub, time, mine) {
+  const li = el("li", (mine ? "mine " : "") + (fleetText ? "" : "solo"));
+  const m = el("div", "main");
+  if (fleetText) { m.appendChild(el("span", "fl", fleetText + ":")); m.appendChild(document.createTextNode(" ")); }
+  m.appendChild(document.createTextNode(label));
+  if (time) { m.appendChild(document.createTextNode("  ")); m.appendChild(el("span", "t", time)); }
+  li.appendChild(m);
+  if (sub) li.appendChild(el("div", "sub2", sub));
+  return li;
 }
 function fillSheet() {
-  const day = nav[navIdx], n = daysFrom(day.date);
-  $("sheet-when").textContent = n === 0 ? "Today" : n === 1 ? "Tomorrow" : n > 1 ? "In " + n + " days" : "Past";
+  const day = nav[navIdx];
   $("sheet-title").textContent = fmtLong.format(day.date);
   const body = $("sheet-body"); body.textContent = "";
   const g = groupDay(day, { weekly: true });
   if (day.gp) { const p = el("p", ""); p.style.marginTop = "6px"; p.appendChild(el("span", "badge gp", "Grand Prix weekend")); body.appendChild(p); }
   const st = dayStart(day);
-  const facts = el("div", "sheet-facts");
-  [[st || (g.racing.length ? "TBC" : "No racing"), st || g.racing.length ? "First start" : "Club racing"], [day.hw ? (day.est ? "≈" : "") + day.hw : "–", "High water"], [isNaN(day.ht) ? "–" : (day.est ? "≈" : "") + day.ht.toFixed(1) + " m", "Tide height"]].forEach(([v, l]) => {
-    const f = el("div", ""); f.appendChild(el("b", "", v)); f.appendChild(el("span", "", l)); facts.appendChild(f);
-  });
-  body.appendChild(facts);
-  if (day.est && day.hw) body.appendChild(el("p", "muted", "≈ This tide isn't printed in the programme, so it's an estimate."));
+  if (g.racing.length) { const p = el("p", "firststart"); p.appendChild(document.createTextNode("First start ")); p.appendChild(el("b", "", st || "TBC")); body.appendChild(p); }
 
   if (g.racing.length) {
-    body.appendChild(el("h3", "", "Racing, in start order"));
+    body.appendChild(el("h3", "", "Racing by Fleet"));
     const ul = el("ul", "list");
-    g.racing.forEach(i => {
-      const sel = mySel(i), mine = sel.length > 0;
-      ul.appendChild(listRow(mine ? orderText(sel) : (i.all ? "All" : i.orderText), i.label + (i.tag ? " (" + i.tag + ")" : ""), i.all ? i.fleetsText : i.fleets.join(", "), i.start && i.start !== st ? i.start : "", mine));
-    });
+    g.racing.forEach(i => ul.appendChild(listRow(fleetNames(i), i.label + (i.tag ? " (" + i.tag + ")" : ""), "", i.start && i.start !== st ? i.start : "", mySel(i).length > 0)));
     body.appendChild(ul);
-  } else if (g.noRacing || !g.events.length && !g.training.length) body.appendChild(el("p", "", "No racing."));
+  } else if (hasBJRC(g) || g.noRacing || !g.events.length && !g.training.length) body.appendChild(el("p", "", "No club racing."));
   if (g.events.length) {
     body.appendChild(el("h3", "", "Events"));
     const ul = el("ul", "list");
-    g.events.forEach(i => ul.appendChild(listRow("", i.label + (i.tag ? " (" + i.tag + ")" : ""), [i.fleets.length ? fleetsText(i.fleets) : "", i.detail].filter(Boolean).join(" · "), i.start ? (i.start === "TBC" ? "start TBC" : i.start) : "", false)));
+    g.events.forEach(i => {
+      const time = i.start ? (i.start === "TBC" ? "start TBC" : i.start) : "";
+      if (isBJRC(i)) ul.appendChild(listRow("BJRC", i.label.replace(/^BJRC\s*/, ""), i.detail, time, false));
+      else ul.appendChild(listRow("", i.label + (i.tag ? " (" + i.tag + ")" : ""), [i.fleets.length ? fleetsText(i.fleets) : "", i.detail].filter(Boolean).join(" · "), time, false));
+    });
     body.appendChild(ul);
   }
   if (g.training.length) {
     body.appendChild(el("h3", "", "Training"));
     const ul = el("ul", "list");
-    g.training.forEach(i => ul.appendChild(listRow("T", i.label + (i.tag ? " (" + i.tag + ")" : ""), i.detail, i.start === "TBC" || !i.start ? "start TBC" : i.start, false)));
+    g.training.forEach(i => ul.appendChild(listRow("", i.label + (i.tag ? " (" + i.tag + ")" : ""), i.detail, i.start === "TBC" || !i.start ? "start TBC" : i.start, false)));
     body.appendChild(ul);
   }
 
-  body.appendChild(el("h3", "", "Forecast"));
+  body.appendChild(el("h3", "", "Weather Forecast"));
   const wxBox = el("div", ""); wxBox.id = "sheet-wx"; body.appendChild(wxBox); fillWeather();
 
-  if (!isNaN(day.ht)) {
+  if (day.hw || !isNaN(day.ht)) {
     body.appendChild(el("h3", "", "Tide"));
-    const sc = el("div", "scale"); const fill = document.createElement("i");
-    fill.style.width = Math.max(4, ((day.ht - MIN_H) / (MAX_H - MIN_H || 1)) * 100) + "%"; sc.appendChild(fill);
-    sc.setAttribute("role", "img"); sc.setAttribute("aria-label", "High water " + day.ht.toFixed(1) + " metres, on a scale from " + MIN_H.toFixed(1) + " to " + MAX_H.toFixed(1));
-    body.appendChild(sc);
-    const lab = el("div", "scale-labels"); lab.appendChild(el("span", "", "Lowest in programme " + MIN_H.toFixed(1) + " m")); lab.appendChild(el("span", "", "Highest " + MAX_H.toFixed(1) + " m")); body.appendChild(lab);
-    const lower = DAYS.filter(x => x.ht < day.ht).length, pct = Math.round((lower / DAYS.length) * 100);
-    body.appendChild(el("p", "", "High water of " + day.ht.toFixed(1) + " m is higher than " + pct + "% of the days in the programme."));
-    if (st && day.hw) {
-      const diff = toMin(day.hw) - toMin(st);
-      body.appendChild(el("p", "", diff === 0 ? "High water is at the first start." : diff > 0 ? "High water is " + span(diff) + " after the first start." : "High water is " + span(-diff) + " before the first start."));
+    const nums = el("div", "tide-nums");
+    [[day.hw ? (day.est ? "≈" : "") + day.hw : "–", "High water"], [isNaN(day.ht) ? "–" : (day.est ? "≈" : "") + day.ht.toFixed(1) + " m", "Tide height"]].forEach(([v, l]) => {
+      const f = el("div", ""); f.appendChild(el("b", "", v)); f.appendChild(el("span", "", l)); nums.appendChild(f);
+    });
+    body.appendChild(nums);
+    if (day.est && day.hw) body.appendChild(el("p", "muted", "≈ This tide isn't printed in the programme, so it's an estimate."));
+    if (!isNaN(day.ht)) {
+      const sc = el("div", "scale"); const fill = document.createElement("i");
+      fill.style.width = Math.max(4, ((day.ht - MIN_H) / (MAX_H - MIN_H || 1)) * 100) + "%"; sc.appendChild(fill);
+      sc.setAttribute("role", "img"); sc.setAttribute("aria-label", "High water " + day.ht.toFixed(1) + " metres, on a scale from " + MIN_H.toFixed(1) + " to " + MAX_H.toFixed(1));
+      body.appendChild(sc);
+      const lab = el("div", "scale-labels"); lab.appendChild(el("span", "", "Lowest in programme " + MIN_H.toFixed(1) + " m")); lab.appendChild(el("span", "", "Highest " + MAX_H.toFixed(1) + " m")); body.appendChild(lab);
+      const lower = DAYS.filter(x => x.ht < day.ht).length, pct = Math.round((lower / DAYS.length) * 100);
+      body.appendChild(el("p", "", "High water of " + day.ht.toFixed(1) + " m is higher than " + pct + "% of the days in the programme."));
+      if (st && day.hw) {
+        const diff = toMin(day.hw) - toMin(st);
+        body.appendChild(el("p", "", diff === 0 ? "High water is at the first start." : diff > 0 ? "High water is " + span(diff) + " after the first start." : "High water is " + span(-diff) + " before the first start."));
+      }
     }
   }
   const prev = $("sheet-prev"), next = $("sheet-next"), p = nav[navIdx - 1], nx = nav[navIdx + 1];
@@ -882,8 +915,7 @@ function fillWeather() {
   }
   const wh = wxHours(day);
   const cells = wh.hours.map(h => ({ h, d: WX.byTime[day.iso + "T" + String(h).padStart(2, "0") + ":00"] })).filter(c => c.d);
-  if (!cells.length) { box.appendChild(el("p", "muted", "There's no forecast for this day yet. It covers the next 16 days and gets less reliable further ahead.")); return; }
-  box.appendChild(el("p", "muted", wh.note));
+  if (!cells.length) { box.appendChild(el("p", "muted", "No forecast available.")); return; }
   const strip = el("div", "wx-strip");
   cells.forEach(({ h, d }) => {
     const c = el("div", "wx"); c.appendChild(el("div", "wx-time", String(h).padStart(2, "0") + ":00"));
@@ -895,7 +927,7 @@ function fillWeather() {
     w.appendChild(l1); w.appendChild(el("div", "wx-gust", "gusts " + Math.round(d.gust) + " kn")); c.appendChild(w); strip.appendChild(c);
   });
   box.appendChild(strip);
-  const credit = el("p", "wx-credit", "Wind in knots; the arrow points where the wind is heading, the letters say where it comes from. Forecast for " + CONFIG.forecast.place + " from ");
+  const credit = el("p", "wx-credit", "Forecast for " + CONFIG.forecast.place + " from ");
   const a = el("a", "", "Open-Meteo.com"); a.href = "https://open-meteo.com/"; a.target = "_blank"; a.rel = "noopener"; credit.appendChild(a); credit.appendChild(document.createTextNode("."));
   box.appendChild(credit);
 }
