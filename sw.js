@@ -1,5 +1,5 @@
 // Network first, so updates show up straight away; falls back to the saved copy when offline.
-const CACHE = "bsc-sailing-2026-v1";
+const CACHE = "bsc-sailing-2026-v2";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
@@ -16,6 +16,7 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
+  if (new URL(e.request.url).hostname === "api.open-meteo.com") return; // always live, never cached
   e.respondWith(
     fetch(e.request)
       .then(res => {
