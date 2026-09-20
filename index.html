@@ -1,14 +1,15 @@
 <!DOCTYPE html>
+<!-- BSC Sailing Calendar app, version 2.4.0 (2026-09-20) -->
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>BSC Sailing Programme 2026</title>
+<title>BSC Sailing Calendar</title>
 <meta name="theme-color" content="#0E2231">
-<meta name="application-name" content="BSC Sailing">
+<meta name="application-name" content="BSC Calendar">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="BSC Sailing">
+<meta name="apple-mobile-web-app-title" content="BSC Calendar">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -27,253 +28,166 @@
   --water-soft: #9CC5D8;
   --buoy: #BF3A1E;
   --buoy-soft: #F6DDD5;
+  --gold: #8A5A00;
+  --gold-soft: #F8E6B8;
   --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0B1A24;
-    --surface: #12283A;
-    --ink: #E6EEF2;
-    --muted: #97ADBB;
-    --line: #26424F;
-    --water: #72B9D6;
-    --water-soft: #2E6C88;
-    --buoy: #FF8A66;
-    --buoy-soft: #3A2620;
+    --bg: #0B1A24; --surface: #12283A; --ink: #E6EEF2; --muted: #97ADBB; --line: #26424F;
+    --water: #72B9D6; --water-soft: #2E6C88; --buoy: #FF8A66; --buoy-soft: #3A2620;
+    --gold: #F2C14E; --gold-soft: #3B3010;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0B1A24;
-  --surface: #12283A;
-  --ink: #E6EEF2;
-  --muted: #97ADBB;
-  --line: #26424F;
-  --water: #72B9D6;
-  --water-soft: #2E6C88;
-  --buoy: #FF8A66;
-  --buoy-soft: #3A2620;
+  --bg: #0B1A24; --surface: #12283A; --ink: #E6EEF2; --muted: #97ADBB; --line: #26424F;
+  --water: #72B9D6; --water-soft: #2E6C88; --buoy: #FF8A66; --buoy-soft: #3A2620;
+  --gold: #F2C14E; --gold-soft: #3B3010;
 }
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--body);
-  font-size: 16px;
-  line-height: 1.45;
-  font-variant-numeric: tabular-nums;
-}
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.45; font-variant-numeric: tabular-nums; }
 body.lock { overflow: hidden; }
 .sr { position: absolute; left: -9999px; }
 .wrap { max-width: 720px; margin: 0 auto; padding: 20px 14px 56px; }
-
-h1 {
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: clamp(1.7rem, 7vw, 2.4rem);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  margin: 4px 0 6px;
-}
+.brand { display: flex; align-items: center; gap: 12px; margin: 4px 0 6px; }
+.logo { flex: none; width: 56px; height: 56px; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(1.7rem, 7vw, 2.4rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
 .sub { margin: 0 0 18px; color: var(--muted); max-width: 46ch; }
-
-/* Shared pill button */
-.pill {
-  flex: none;
-  font: inherit;
-  font-size: 0.92rem;
-  color: var(--ink);
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 6px 13px;
-  cursor: pointer;
-}
-.pill[aria-pressed="true"] { background: var(--water); border-color: var(--water); color: var(--bg); font-weight: 700; }
-.pill:disabled { opacity: 0.4; cursor: default; }
+p { margin: 0; }
 :focus-visible { outline: 3px solid var(--water); outline-offset: 2px; }
 
-/* Next on */
-.next {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-left: 6px solid var(--buoy);
-  border-radius: 4px;
-  padding: 14px 16px 16px;
-  margin-bottom: 22px;
-}
-.next .when { margin: 0; color: var(--buoy); font-weight: 700; }
-.next .date-big {
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: clamp(1.5rem, 6.4vw, 2.1rem);
-  line-height: 1.1;
-  letter-spacing: -0.015em;
-  margin: 2px 0 8px;
-}
-.next .what { margin: 0 0 12px; }
+.pill { flex: none; font: inherit; font-size: 0.92rem; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px; cursor: pointer; }
+.pill[aria-pressed="true"] { background: var(--water); border-color: var(--water); color: var(--bg); font-weight: 700; }
+.pill:disabled { opacity: 0.4; cursor: default; }
+
+/* tokens (what's on) */
+.tokens { display: flex; flex-direction: column; gap: 5px; margin: 5px 0 0; padding: 0; list-style: none; }
+.tok { display: flex; flex-wrap: wrap; align-items: baseline; gap: 1px 7px; font-size: 0.95rem; line-height: 1.3; min-width: 0; }
+.tok .lbl { min-width: 0; overflow-wrap: anywhere; }
+.num { display: inline-block; min-width: 1.5em; padding: 0 5px; border-radius: 4px; background: var(--water); color: var(--bg); font-weight: 700; font-size: 0.8rem; text-align: center; }
+.tok.mine .num { background: var(--buoy); }
+.tok .t { color: var(--water); font-weight: 700; }
+.tok .f { color: var(--muted); font-size: 0.85rem; }
+.tok .tag { font-size: 0.72rem; font-weight: 700; padding: 0 6px; border-radius: 3px; background: var(--water-soft); color: var(--ink); }
+.tok.event .lbl { font-weight: 700; }
+.tok.train .num { background: var(--gold); color: var(--bg); }
+.badge { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 1px 8px; border-radius: 3px; margin-right: 6px; }
+.badge.gp { background: var(--gold-soft); color: var(--gold); border: 1px solid var(--gold); }
+
+/* next on */
+.next { background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--buoy); border-radius: 4px; padding: 14px 16px 16px; margin-bottom: 18px; }
+.next .when { color: var(--buoy); font-weight: 700; }
+.next .date-big { font-family: var(--display); font-weight: 700; font-size: clamp(1.5rem, 6.4vw, 2.1rem); line-height: 1.1; letter-spacing: -0.015em; margin: 2px 0 6px; }
+.next .tokens { margin: 4px 0 12px; }
 .next-facts { display: flex; flex-wrap: wrap; gap: 8px 22px; align-items: center; }
 .next-facts .pill { margin-left: auto; }
 .fact b { display: block; font-family: var(--display); font-size: 1.35rem; line-height: 1.1; }
 .fact span { color: var(--muted); font-size: 0.85rem; }
 
-/* Controls */
-.controls { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 8px 0 10px; margin: 0 0 6px; border-bottom: 1px solid var(--line); }
+/* fleet bar */
+.fleetbar { margin: 0 0 14px; }
+.fleetbar h2 { font-family: var(--display); font-size: 1rem; margin: 0; }
+.fleethead { display: flex; justify-content: space-between; align-items: center; margin: 0 0 6px; }
+.fleethead .pill { padding: 3px 12px; font-size: 0.85rem; }
+.row-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 4px; scrollbar-width: none; }
+.row-scroll::-webkit-scrollbar { display: none; }
+.hint { color: var(--muted); font-size: 0.85rem; margin-top: 2px; }
+
+/* controls */
+.controls { margin: 0 0 6px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
 .search-wrap { position: relative; margin-bottom: 8px; }
-.search {
-  width: 100%;
-  font: inherit;
-  color: var(--ink);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 10px 12px;
-  margin: 0;
-}
+.search { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; margin: 0; }
 .search::placeholder { color: var(--muted); }
-.suggest {
-  position: absolute;
-  left: 0; right: 0; top: calc(100% + 4px);
-  z-index: 10;
-  max-height: min(60vh, 380px);
-  overflow-y: auto;
-  background: var(--surface);
-  border: 1px solid var(--ink);
-  border-radius: 4px;
-  box-shadow: 0 8px 24px rgba(8, 20, 30, 0.22);
-}
+.suggest { position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 10; max-height: min(60vh, 380px); overflow-y: auto; background: var(--surface); border: 1px solid var(--ink); border-radius: 4px; box-shadow: 0 8px 24px rgba(8, 20, 30, 0.22); }
 .suggest[hidden] { display: none; }
-.sug-head { margin: 0; padding: 9px 12px 4px; color: var(--muted); font-size: 0.82rem; }
-.sug-empty { margin: 0; padding: 12px; color: var(--muted); }
-.sug {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 12px;
-  width: 100%;
-  font: inherit;
-  color: var(--ink);
-  background: none;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  padding: 11px 12px;
-  text-align: left;
-  cursor: pointer;
-}
+.sug-head { padding: 9px 12px 4px; color: var(--muted); font-size: 0.82rem; }
+.sug-empty { padding: 12px; color: var(--muted); }
+.sug { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; width: 100%; font: inherit; color: var(--ink); background: none; border: 0; border-bottom: 1px solid var(--line); padding: 11px 12px; text-align: left; cursor: pointer; }
 .sug:last-child { border-bottom: 0; }
 .sug:hover, .sug:focus-visible { background: var(--buoy-soft); outline: none; }
 .sug small { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
-
-.row-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 4px; scrollbar-width: none; }
-.row-scroll::-webkit-scrollbar { display: none; }
 .toggles { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 4px; font-size: 0.92rem; }
 .toggles label { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; }
 .toggles input { width: 18px; height: 18px; accent-color: var(--water); }
-
 .count { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 10px 0 0; color: var(--muted); font-size: 0.88rem; }
 .count .pill { font-size: 0.82rem; padding: 3px 10px; color: var(--ink); }
 
-/* Month + days */
-.month-head {
-  position: sticky;
-  top: var(--controls-h, 150px);
-  z-index: 3;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  background: var(--bg);
-  margin: 22px 0 0;
-  padding: 8px 2px 6px;
-  border-bottom: 2px solid var(--ink);
-}
+/* list */
+.month-head { position: sticky; top: 0; z-index: 3; display: flex; justify-content: space-between; align-items: baseline; background: var(--bg); margin: 22px 0 0; padding: 8px 2px 6px; border-bottom: 2px solid var(--ink); }
 .month-head h2 { margin: 0; font-family: var(--display); font-size: 1.35rem; letter-spacing: -0.01em; }
 .month-head span { color: var(--muted); font-size: 0.85rem; }
 .days { list-style: none; margin: 0; padding: 0; }
 .day { border-bottom: 1px solid var(--line); border-left: 4px solid transparent; }
 .day.racing { border-left-color: var(--water); background: var(--surface); }
+.day.gp { border-left-color: var(--gold); }
 .day.today { border-left-color: var(--buoy); background: var(--buoy-soft); }
 .day.past { opacity: 0.55; }
-.day-btn {
-  display: grid;
-  grid-template-columns: 46px 1fr 92px;
-  gap: 4px 10px;
-  width: 100%;
-  padding: 11px 4px 11px 10px;
-}
-button.day-btn {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: 0;
-  text-align: left;
-  cursor: pointer;
-}
+.day-btn { display: grid; grid-template-columns: 46px 1fr 92px; gap: 4px 10px; width: 100%; padding: 11px 4px 11px 10px; }
+button.day-btn { font: inherit; color: inherit; background: none; border: 0; text-align: left; cursor: pointer; }
 button.day-btn:hover { background: color-mix(in srgb, var(--water) 10%, transparent); }
 button.day-btn:focus-visible { outline-offset: -3px; }
 .date { text-align: center; line-height: 1.05; }
 .wd { display: block; font-size: 0.8rem; color: var(--muted); }
 .dn { display: block; font-family: var(--display); font-weight: 700; font-size: 1.55rem; }
 .today .wd { color: var(--buoy); font-weight: 700; }
-.events { margin: 0; overflow-wrap: anywhere; }
-.tag { display: inline-block; margin: 0 0 3px; padding: 1px 8px; border-radius: 3px; background: var(--water-soft); color: var(--ink); font-size: 0.8rem; font-weight: 700; }
-.start { margin: 3px 0 0; font-weight: 700; color: var(--water); }
-.nr { margin: 3px 0 0; color: var(--muted); font-size: 0.9rem; }
-.events + .start, .events + .nr { margin-top: 4px; }
+.start { font-weight: 700; color: var(--water); }
+.nr { color: var(--muted); font-size: 0.92rem; }
 .tide { text-align: right; font-size: 0.88rem; color: var(--muted); line-height: 1.25; }
 .tide .hw { display: block; color: var(--ink); font-weight: 700; }
+.est { color: var(--muted); font-weight: 400; }
 .gauge { display: block; height: 7px; margin: 5px 0 3px auto; width: 100%; background: var(--line); border-radius: 2px; overflow: hidden; }
 .gauge i { display: block; height: 100%; background: var(--water); }
-
 .empty { padding: 32px 8px; text-align: center; color: var(--muted); }
+.seasonbar { margin: -8px 0 14px; }
+.check { margin-top: 24px; padding: 12px 14px; border: 1px dashed var(--muted); border-radius: 6px; font-size: 0.9rem; }
+.check h2 { font-family: var(--display); font-size: 1rem; margin: 0 0 6px; }
+.check ul { margin: 0; padding-left: 18px; }
+.check .bad { color: var(--buoy); font-weight: 700; }
+.version { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
+.support { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
+.support summary { cursor: pointer; }
+.support ul { margin: 6px 0 0; padding-left: 18px; }
 .foot { margin-top: 30px; color: var(--muted); font-size: 0.85rem; max-width: 60ch; }
 .foot p { margin: 0 0 8px; }
 
-/* Day details sheet */
-dialog#sheet {
-  border: 0;
-  padding: 0;
-  background: var(--surface);
-  color: var(--ink);
-  width: min(100%, 560px);
-  max-width: 100%;
-  max-height: 90vh;
-  margin: auto auto 0;
-  border-radius: 14px 14px 0 0;
-  overflow-y: auto;
-}
+/* sheet */
+dialog#sheet { border: 0; padding: 0; background: var(--surface); color: var(--ink); width: min(100%, 560px); max-width: 100%; max-height: 90vh; margin: auto auto 0; border-radius: 14px 14px 0 0; overflow-y: auto; }
 dialog#sheet::backdrop { background: rgba(8, 20, 30, 0.6); }
 dialog#sheet[open] { animation: rise 0.18s ease-out; }
 @keyframes rise { from { transform: translateY(28px); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { dialog#sheet[open] { animation: none; } }
 .sheet-in { padding: 16px 18px 20px; }
 .sheet-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.sheet-when { margin: 0; color: var(--buoy); font-weight: 700; }
+.sheet-when { color: var(--buoy); font-weight: 700; }
 #sheet-title { font-family: var(--display); font-size: clamp(1.5rem, 6vw, 2rem); line-height: 1.1; letter-spacing: -0.015em; margin: 8px 0 0; }
-.sheet-facts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin: 14px 0 4px;
-  padding: 12px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-.sheet-facts b { display: block; font-family: var(--display); font-size: 1.35rem; line-height: 1.15; }
+.sheet-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0 4px; padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.sheet-facts b { display: block; font-family: var(--display); font-size: 1.3rem; line-height: 1.15; }
 .sheet-facts span { color: var(--muted); font-size: 0.85rem; }
 .sheet h3 { font-family: var(--display); font-size: 1.05rem; margin: 18px 0 6px; }
 .sheet p { margin: 0 0 6px; }
 .sheet .muted { color: var(--muted); }
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { display: grid; grid-template-columns: 2.2em 1fr; gap: 2px 10px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.list li:last-child { border-bottom: 0; }
+.list .n { text-align: center; }
+.list .n .num { min-width: 1.7em; }
+.list li.mine .num { background: var(--buoy); }
+.list .main { font-weight: 700; }
+.list .sub2 { color: var(--muted); font-size: 0.9rem; }
+.list .t { color: var(--water); font-weight: 700; }
 .scale { height: 10px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 10px 0 4px; }
 .scale i { display: block; height: 100%; background: var(--water); }
 .scale-labels { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.82rem; margin-bottom: 8px; }
-.sheet-nav { display: flex; gap: 8px; margin-top: 22px; }
+.sheet-cal { margin-top: 22px; }
+.sheet-cal .pill { width: 100%; padding: 9px 10px; }
+.sheet-cal[hidden] { display: none; }
+.sheet-nav { display: flex; gap: 8px; margin-top: 10px; }
 .sheet-nav .pill { flex: 1; padding: 9px 10px; }
 
-
-/* Forecast */
+/* forecast */
 .wx-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0 4px; }
 .wx { border: 1px solid var(--line); border-radius: 6px; padding: 8px 4px 10px; text-align: center; background: var(--bg); }
 .wx-time { font-weight: 700; font-size: 0.85rem; color: var(--muted); }
@@ -287,16 +201,13 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
 .wx-temp { font-family: var(--display); font-weight: 700; font-size: 1.3rem; line-height: 1.1; }
 .wx-desc { font-size: 0.8rem; color: var(--muted); margin-top: 1px; }
 .wx-wind { margin-top: 6px; font-size: 0.9rem; line-height: 1.35; }
-.wx-wind b { font-weight: 700; }
 .wx-dir { display: inline-flex; align-items: center; gap: 3px; }
 .wx-arrow { width: 13px; height: 13px; color: var(--water); }
 .wx-gust { color: var(--muted); font-size: 0.85rem; }
 .wx-credit { color: var(--muted); font-size: 0.78rem; margin-top: 6px; }
 .wx-credit a { color: inherit; }
 
-@media (max-width: 360px) {
-  .day-btn { grid-template-columns: 40px 1fr 80px; gap: 4px 8px; }
-}
+@media (max-width: 360px) { .day-btn { grid-template-columns: 40px 1fr 80px; gap: 4px 8px; } }
 @media (min-width: 560px) {
   .day-btn { grid-template-columns: 56px 1fr 120px; gap: 4px 16px; padding: 12px 8px 12px 12px; }
   dialog#sheet { margin: auto; border-radius: 10px; }
@@ -305,10 +216,20 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
 </head>
 <body>
 <div class="wrap">
-  <h1>BSC Sailing Programme 2026</h1>
-  <p class="sub">Start times, races and high water for every day in the season.</p>
+  <div class="brand"><img class="logo" src="logo.png" alt="Blackwater Sailing Club" width="56" height="56" onerror="this.hidden=true"><h1 id="title">BSC Sailing Calendar</h1></div>
+  <p class="sub" id="sub">Races, events, training and tides for every day of the season.</p>
 
-  <section class="next" id="next" aria-live="polite"></section>
+  <section class="seasonbar" id="seasonbar" hidden>
+    <div class="row-scroll" id="seasons" role="group" aria-label="Season"></div>
+  </section>
+
+  <section class="next" id="next" aria-live="polite" hidden></section>
+
+  <section class="fleetbar" id="fleetbar" hidden>
+    <div class="fleethead"><h2>My fleets</h2><button class="pill" type="button" id="fleetReset" hidden>Reset</button></div>
+    <div class="row-scroll" id="fleets" role="group" aria-label="My fleets"></div>
+    <p class="hint" id="fleethint"></p>
+  </section>
 
   <div class="controls" id="controls">
     <div class="search-wrap" id="searchWrap">
@@ -321,15 +242,22 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
     <div class="toggles">
       <label><input type="checkbox" id="hidePast" checked> Hide past days</label>
       <label><input type="checkbox" id="showNR"> Show no-racing days</label>
+      <label><input type="checkbox" id="showWeekly" checked> Weekly sessions</label>
     </div>
     <p class="count" id="count"></p>
+    <p class="hint" id="calnote" role="status"></p>
   </div>
 
-  <main id="list"></main>
+  <main id="list"><p class="empty">Loading the programme…</p></main>
 
-  <div class="foot">
-    <p>HW is the high water time and height in metres, as printed in the programme. Races are listed as printed; the programme's fleet columns aren't separated here.</p>
-    <p>The programme says to check the club website and newsletters for updates. Not in this version: the cruising, coaching and course tables at the foot of the printed programme.</p>
+  <section class="check" id="check" hidden></section>
+
+  <div class="foot" id="foot" hidden>
+    <p>Numbers show the start order (1 = first to start). HW is high water; a ≈ before a time or height means it isn't printed in the programme and is estimated. "Start TBC" means the coach or instructor sets the start.</p>
+    <p>Add to calendar saves a file that opens in your phone's Calendar. The programme gives start times but not finish times, so timed entries last 3 hours unless a time range is shown, and "start TBC" items are added as all-day entries.</p>
+    <p>Unofficial. Check the club website and newsletters for updates.</p>
+    <p class="version" id="version"></p>
+    <details class="support"><summary>Support info</summary><ul id="supportList"></ul></details>
   </div>
 </div>
 
@@ -341,6 +269,7 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
     </div>
     <h2 id="sheet-title"></h2>
     <div id="sheet-body"></div>
+    <div class="sheet-cal"><button class="pill" type="button" id="sheet-cal">Add to calendar</button><p class="hint" id="sheet-calnote" role="status"></p></div>
     <div class="sheet-nav">
       <button class="pill" type="button" id="sheet-prev"></button>
       <button class="pill" type="button" id="sheet-next"></button>
@@ -349,325 +278,302 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
 </dialog>
 
 <script>
-const DATA = [
-["2026-03-07","15:08",3.1,"13:15","Osea Handicap 1&2 Spring Trophy 1&2"],
-["2026-03-08","15:37",2.9,"13:45","Ewart Cup 1&2 Wings Trophy 1&2 Icicle Cup 1 Lake exclusive use CRYC"],
-["2026-03-14","08:51",2.0,"",""],
-["2026-03-15","10:07",2.3,"",""],
-["2026-03-20","13:37",3.4,"11:30","ZRT Race"],
-["2026-03-21","14:15",3.4,"12:15","Osea Handicap 3&4 Spring Trophy 3&4 Training Cadet Frostbite"],
-["2026-03-22","14:52",3.3,"12:45","Ewart Cup 3&4 Wings Trophy 3&4 Icicle Cup 2 Cadet Frostbite"],
-["2026-03-28","08:29",2.4,"",""],
-["2026-03-29","10:58",2.7,"09:30","Osea Handicap 5&6 Spring Trophy 5&6 Icicle Cup 3"],
-
-["2026-04-03","14:35",3.2,"12:30","Fireball Salver Series 1&2 Easter Series 1&2 Easter Cup 1 Cruiser Weekend"],
-["2026-04-04","15:06",3.1,"13:00","Fireball Salver Series 3&4 Easter Series 3&4 Easter Cup 2 Cruiser Weekend"],
-["2026-04-05","15:36",3.0,"13:45","Fireball Salver Series 5&6 Easter Series 5&6 Easter Cup 3 Cruiser Weekend"],
-["2026-04-06","16:04",2.9,"15:00","Osea Cup Cruiser Weekend"],
-["2026-04-11","07:26",2.0,"","Adult RYA 1&2 Dinghy weekend course"],
-["2026-04-12","09:04",2.1,"","Adult RYA 1&2 Dinghy weekend course"],
-["2026-04-17","13:29",3.3,"11:30","Friends Trophy"],
-["2026-04-18","14:10",3.4,"12:00","Cat Trophy 1&2 Fiz Fax 1&2 Cadet Training / ITCA (Topper) Open"],
-["2026-04-19","14:52",3.3,"12:45","Swann Spoon 1&2 Fendick Tankard 1&2 Pippin 1&2 April Cup / Mirror Blackwater Cup 1 Cadet Training / ITCA (Topper) Open"],
-["2026-04-24","18:59",2.3,"",""],
-["2026-04-25","07:45",2.5,"","BJRC Maldon Salver 10.00 Osea Pier"],
-["2026-04-26","09:15",2.6,"",""],
-
-["2026-05-01","13:32",3.1,"11:30","Class training Howards Way Wayfarer Training / Adult RYA 1&2 Dinghy Friday course"],
-["2026-05-02","14:05",3.1,"12:00","Britannia 1&2 Wayfarer Open Calamity Cup 1&2 Britannia 1 Snipe/Wayfarer Open"],
-["2026-05-03","14:37",3.1,"12:45","Britannia 3&4 Wayfarer Open Calamity Cup 3&4 Britannia 2 Snipe/Wayfarer Open"],
-["2026-05-04","15:07",3.0,"14:15","Blackwater Cup"],
-["2026-05-08","17:21",2.5,"10:00","Lake Grenade Race"],
-["2026-05-09","18:10",2.3,"16:15","Open Day Race Open Day"],
-["2026-05-10","19:18",2.2,"","BJRC B'water Cup 09.00 Osea Pier. Lake exclusive use RYA"],
-["2026-05-15","12:12",3.1,"",""],
-["2026-05-16","13:00",3.2,"11:00","Cat Trophy 3&4 Fiz Fax 3&4 Gray Cup 1&2 Saturday Series 1 Cadet Training"],
-["2026-05-17","13:47",3.3,"11:45","Swann Spoon 3&4 Fendick Tankard 3&4 Pippin 3&4 Copland Cup 1&2 Spring Cup / Mirror Blackwater Cup 2 Cadet Training"],
-["2026-05-22","17:47",2.7,"",""],
-["2026-05-23","18:49",2.6,"",""],
-["2026-05-24","07:29",2.7,"","BJRC Marconi Cup 09.30 MSC"],
-["2026-05-25","08:42",2.7,"",""],
-["2026-05-29","12:26",2.9,"10:30","Technical Race"],
-["2026-05-30","13:04",2.9,"11:00","Swann Spoon 5&6 Fiz Fax 5&6 Training Gray Cup 3&4 Saturday Series 2 National 18 Open"],
-["2026-05-31","13:40",3.0,"11:45","Swann Spoon 7&8 Fendick Tankard 5&6 Copland Cup 3&4 Island Cup National 18 Open"],
-
-["2026-06-01","14:14",3.0,"12:15","Mirror Week"],
-["2026-06-02","14:48",3.0,"12:45","Mirror Week"],
-["2026-06-03","15:22",3.0,"13:30","Mirror Week"],
-["2026-06-04","15:56",2.9,"14:00","Mirror Week"],
-["2026-06-05","16:30",2.8,"14:30","Mirror Week / Pursuit Race"],
-["2026-06-06","17:08",2.7,"15:15","Figleaf Flagon 1&2 Fiz Fax 7&8 Gray Cup 5&6 Adult RYA 1&2 Dinghy weekend course"],
-["2026-06-07","17:52",2.6,"","Adult RYA 1&2 course / BJRC Paget Cup 09.30 Osea Pier"],
-["2026-06-09","19:43",2.6,"19:00","Evening Race 1"],
-["2026-06-13","11:41",3.0,"09:45","Jubilee 1&2 Foster Bowl 1 Cadet Training"],
-["2026-06-14","12:37",3.1,"10:45","Jubilee 3&4 Foster Bowl 2 Cadet Training"],
-["2026-06-15","13:32",3.2,"11:30","Heron Cup 1&2 Short Course Week 1"],
-["2026-06-16","14:23",3.2,"12:15","Heron Cup 3&4 Short Course Week 2"],
-["2026-06-17","15:12",3.2,"13:00","Heron Cup 5& Single Short Course Week 3"],
-["2026-06-18","15:59",3.2,"13:45","Heron Cup 6& Crew Short Course Week 4"],
-["2026-06-19","16:47",3.2,"14:45","Heron Cup 7&8 Short Course Week 5 & Julie's Jug"],
-["2026-06-20","17:35",3.1,"15:30","Figleaf Flagon 3&4 Fiz Fax 9&10"],
-["2026-06-21","18:25",3.0,"","BJRC Stone Cruiser 08.30 SSC"],
-["2026-06-23","20:14",2.7,"19:00","Evening Race 2"],
-["2026-06-26","11:03",2.6,"10:00","Friday Sailing"],
-["2026-06-27","11:56",2.7,"10:00","Figleaf 5&6 / Hull 1&2 Boyden Bell 1&2 Joss Series 1&2 Gray Cup 7&8 Mirror Blackwater Cup 3"],
-["2026-06-28","12:40",2.8,"10:45","Leonora 1&2 / Hull 3&4 Albacore Bowl 1&2 Joss Series 3&4 Copland Cup 5&6 Summer Cup"],
-
-["2026-07-03","15:45",3.1,"13:45","Friday Sailing"],
-["2026-07-04","16:20",3.0,"14:30","Regatta"],
-["2026-07-05","16:54",3.0,"15:00","Round the Islands"],
-["2026-07-09","20:01",2.8,"19:00","Evening Race 3"],
-["2026-07-11","10:09",2.6,"","Commodore's Cruise BJRC Krohn Cup/Triton Trophy 12.00 Osea Pier"],
-["2026-07-12","11:21",2.7,"10:00","Pursuit Race"],
-["2026-07-17","15:48",3.4,"13:45","Friday Sailors Reid Scott"],
-["2026-07-18","16:29",3.4,"14:15","Coronation Cup (MYC start line) Foster Bowl 3"],
-["2026-07-19","17:10",3.3,"15:00","Down River Cup Races"],
-["2026-07-23","20:20",2.7,"19:00","Evening Race 4"],
-["2026-07-25","10:18",2.3,"",""],
-["2026-07-26","11:24",2.5,"",""],
-["2026-07-27","12:19",2.7,"10:30","","Cadet Week"],
-["2026-07-28","13:03",2.8,"11:00","","Cadet Week"],
-["2026-07-29","13:42",3.0,"11:45","","Cadet Week"],
-["2026-07-30","14:18",3.1,"12:15","","Cadet Week"],
-["2026-07-31","14:53",3.2,"12:45","","Cadet Week"],
-
-["2026-08-01","15:27",3.3,"13:30","Leonora Bowl 3&4 Boyden Bell 3&4 Gray Cup 9&10 Mirror Blackwater Cup 4 Saturday Series 3"],
-["2026-08-02","16:00",3.3,"14:00","Leonora Bowl 5&6 Albacore Bowl 3&4 Copland Cup 7&8 August Cup 1"],
-["2026-08-08","20:45",2.4,"19:00","Evening Race 5 BJRC Passage Race / Freeman 09.00 Nass"],
-["2026-08-09","09:47",2.3,"","BJRC Passage Race / Success 09.00 RHYC"],
-["2026-08-10","11:15",2.6,"09:15","","Club Week"],
-["2026-08-11","12:23",2.9,"10:30","","Club Week"],
-["2026-08-12","13:17",3.1,"11:15","","Club Week"],
-["2026-08-13","14:04",3.4,"12:00","","Club Week"],
-["2026-08-14","14:47",3.5,"12:45","","Club Week"],
-["2026-08-15","15:26",3.6,"13:15","","Club Week"],
-["2026-08-16","16:04",3.6,"14:00","Peter's Pot Pursuit","Club Week"],
-["2026-08-22","08:06",2.1,"","Adult RYA 1&2 course / BJRC Brown Cup 10.00 Osea Pier"],
-["2026-08-23","09:28",2.1,"","Adult RYA 1&2 Dinghy weekend course"],
-["2026-08-28","13:53",3.2,"12:00","Postcard Race Cadet/Junior Reid Scott Regatta"],
-["2026-08-29","14:28",3.3,"12:30","Leonora Bowl 7&8 Boyden Bell 5&6 Summer Series 1&2 Gray Cup 11&12 Mirror Blackwater Cup 5 Saturday Series 4 Cadet/Junior Reid Scott Regatta"],
-["2026-08-30","15:01",3.4,"13:00","Leonora Bowl 9&10 Albacore Bowl 5&6 Summer Series 3&4 Copland Cup 9&10 August Cup 2 Challenge Salver 1 Beastie Cadet/Junior Open"],
-["2026-08-31","15:34",3.5,"13:30","Leonora Bowl 10&11 Albacore Bowl 7&8 Summer Series 5&6 Copland Cup 11&12 Bank Holiday Cup Challenge Salver 2"],
-
-["2026-09-04","18:04",3.0,"10:00","Late Lake Challenge"],
-["2026-09-05","19:05",2.7,"","BJRC Smith Cup 08.30 Osea Pier"],
-["2026-09-06","20:36",2.5,"",""],
-["2026-09-12","14:23",3.6,"12:15","Autumn Cup 1&2 September 1 & 2 Training Barbrook Trophy 1&2 Saturday Series 5 Optimist Open"],
-["2026-09-13","14:58",3.6,"13:00","Autn 3&4/F'ball Tankard Autumn Series 1&2 Barbrook Trophy 3&4 Autumn Cup 1 Challenge Salver 3"],
-["2026-09-19","18:43",2.3,"",""],
-["2026-09-20","20:05",2.1,"","BJRC W'mark 9.00 SSC"],
-["2026-09-26","13:19",3.2,"11:30","Autumn Cup 5&6 September 3 & 4 Barbrook Trophy 5&6 Laser Open / Maldon Town Regatta"],
-["2026-09-27","13:54",3.4,"11:45","Autumn Cup 7 & 8 Autumn Series 3&4 Barbrook Trophy 7&8 Autumn Cup 2 Laser Open / Lake exclusive CRYC"],
-
-["2026-10-03","17:53",2.9,"",""],
-["2026-10-04","19:02",2.6,"","BJRC reserve 08.30"],
-["2026-10-09","12:37",3.3,"10:30","Friday MPP Race"],
-["2026-10-10","13:18",3.4,"12:15","Dyer Cup"],
-["2026-10-11","13:54",3.5,"11:45","Grand Prix Final"],
-["2026-10-17","17:16",2.6,"15:30","Norman Eve 1 & 2 October 1 Barbrook Trophy 9&10"],
-["2026-10-18","18:02",2.3,"",""],
-["2026-10-24","11:56",3.0,"10:30","Norman Eve 3 & 4 October 2 Cadet End of Season Regatta"],
-["2026-10-25","11:39",3.2,"09:30","Norman Eve 5 & 6 October 3 End of Season Cup Autumn Cup Cadet End of Season Regatta"],
-["2026-10-26","12:20",3.4,"10:15","Cadet End of Season Regatta"],
-["2026-10-31","15:55",3.2,"13:45","Norman Eve 7 & 8 October 4"]
-];
-
-const SPLIT = {"2026-03-07": ["Osea Handicap 1&2","Spring Trophy 1&2"],"2026-03-08": ["Ewart Cup 1&2","Wings Trophy 1&2","Icicle Cup 1","Lake exclusive use CRYC"],"2026-03-21": ["Osea Handicap 3&4","Spring Trophy 3&4","Training","Cadet Frostbite"],"2026-03-22": ["Ewart Cup 3&4","Wings Trophy 3&4","Icicle Cup 2","Cadet Frostbite"],"2026-03-29": ["Osea Handicap 5&6","Spring Trophy 5&6","Icicle Cup 3"],"2026-04-03": ["Fireball Salver Series 1&2","Easter Series 1&2","Easter Cup 1","Cruiser Weekend"],"2026-04-04": ["Fireball Salver Series 3&4","Easter Series 3&4","Easter Cup 2","Cruiser Weekend"],"2026-04-05": ["Fireball Salver Series 5&6","Easter Series 5&6","Easter Cup 3","Cruiser Weekend"],"2026-04-06": ["Osea Cup","Cruiser Weekend"],"2026-04-18": ["Cat Trophy 1&2","Fiz Fax 1&2","Cadet Training","ITCA (Topper) Open"],"2026-04-19": ["Swann Spoon 1&2","Fendick Tankard 1&2","Pippin 1&2","April Cup","Mirror Blackwater Cup 1","Cadet Training","ITCA (Topper) Open"],"2026-05-01": ["Class training","Howards Way","Wayfarer Training","Adult RYA 1&2 Dinghy Friday course"],"2026-05-02": ["Britannia 1&2 Wayfarer Open","Calamity Cup 1&2","Britannia 1 Snipe/Wayfarer Open"],"2026-05-03": ["Britannia 3&4 Wayfarer Open","Calamity Cup 3&4","Britannia 2 Snipe/Wayfarer Open"],"2026-05-09": ["Open Day Race","Open Day"],"2026-05-10": ["BJRC B'water Cup 09.00 Osea Pier.","Lake exclusive use RYA"],"2026-05-16": ["Cat Trophy 3&4","Fiz Fax 3&4","Gray Cup 1&2","Saturday Series 1","Cadet Training"],"2026-05-17": ["Swann Spoon 3&4","Fendick Tankard 3&4","Pippin 3&4","Copland Cup 1&2","Spring Cup","Mirror Blackwater Cup 2","Cadet Training"],"2026-05-30": ["Swann Spoon 5&6","Fiz Fax 5&6","Training","Gray Cup 3&4","Saturday Series 2","National 18 Open"],"2026-05-31": ["Swann Spoon 7&8","Fendick Tankard 5&6","Copland Cup 3&4","Island Cup","National 18 Open"],"2026-06-05": ["Mirror Week","Pursuit Race"],"2026-06-06": ["Figleaf Flagon 1&2","Fiz Fax 7&8","Gray Cup 5&6","Adult RYA 1&2 Dinghy weekend course"],"2026-06-07": ["Adult RYA 1&2 course","BJRC Paget Cup 09.30 Osea Pier"],"2026-06-13": ["Jubilee 1&2","Foster Bowl 1","Cadet Training"],"2026-06-14": ["Jubilee 3&4","Foster Bowl 2","Cadet Training"],"2026-06-15": ["Heron Cup 1&2","Short Course Week 1"],"2026-06-16": ["Heron Cup 3&4","Short Course Week 2"],"2026-06-17": ["Heron Cup 5& Single","Short Course Week 3"],"2026-06-18": ["Heron Cup 6& Crew","Short Course Week 4"],"2026-06-19": ["Heron Cup 7&8","Short Course Week 5 & Julie's Jug"],"2026-06-20": ["Figleaf Flagon 3&4","Fiz Fax 9&10"],"2026-06-27": ["Figleaf 5&6","Hull 1&2","Boyden Bell 1&2","Joss Series 1&2","Gray Cup 7&8","Mirror Blackwater Cup 3"],"2026-06-28": ["Leonora 1&2","Hull 3&4","Albacore Bowl 1&2","Joss Series 3&4","Copland Cup 5&6","Summer Cup"],"2026-07-11": ["Commodore's Cruise","BJRC Krohn Cup/Triton Trophy 12.00 Osea Pier"],"2026-07-18": ["Coronation Cup (MYC start line)","Foster Bowl 3"],"2026-08-01": ["Leonora Bowl 3&4","Boyden Bell 3&4","Gray Cup 9&10","Mirror Blackwater Cup 4","Saturday Series 3"],"2026-08-02": ["Leonora Bowl 5&6","Albacore Bowl 3&4","Copland Cup 7&8","August Cup 1"],"2026-08-08": ["Evening Race 5","BJRC Passage Race / Freeman 09.00 Nass"],"2026-08-22": ["Adult RYA 1&2 course","BJRC Brown Cup 10.00 Osea Pier"],"2026-08-28": ["Postcard Race","Cadet/Junior Reid Scott Regatta"],"2026-08-29": ["Leonora Bowl 7&8","Boyden Bell 5&6","Summer Series 1&2","Gray Cup 11&12","Mirror Blackwater Cup 5","Saturday Series 4","Cadet/Junior Reid Scott Regatta"],"2026-08-30": ["Leonora Bowl 9&10","Albacore Bowl 5&6","Summer Series 3&4","Copland Cup 9&10","August Cup 2","Challenge Salver 1","Beastie","Cadet/Junior Open"],"2026-08-31": ["Leonora Bowl 10&11","Albacore Bowl 7&8","Summer Series 5&6","Copland Cup 11&12","Bank Holiday Cup","Challenge Salver 2"],"2026-09-12": ["Autumn Cup 1&2","September 1 & 2","Training","Barbrook Trophy 1&2","Saturday Series 5","Optimist Open"],"2026-09-13": ["Autn 3&4","F'ball Tankard","Autumn Series 1&2","Barbrook Trophy 3&4","Autumn Cup 1","Challenge Salver 3"],"2026-09-26": ["Autumn Cup 5&6","September 3 & 4","Barbrook Trophy 5&6","Laser Open","Maldon Town Regatta"],"2026-09-27": ["Autumn Cup 7 & 8","Autumn Series 3&4","Barbrook Trophy 7&8","Autumn Cup 2","Laser Open","Lake exclusive CRYC"],"2026-10-17": ["Norman Eve 1 & 2","October 1","Barbrook Trophy 9&10"],"2026-10-24": ["Norman Eve 3 & 4","October 2","Cadet End of Season Regatta"],"2026-10-25": ["Norman Eve 5 & 6","October 3","End of Season Cup","Autumn Cup","Cadet End of Season Regatta"],"2026-10-31": ["Norman Eve 7 & 8","October 4"]};
-
-const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-const CHIPS = [
-  { id: "all", label: "All days", test: () => true },
-  { id: "racing", label: "Racing", test: r => r.start !== "" },
-  { id: "cadet", label: "Cadet", test: r => /cadet/i.test(r.text + " " + r.tag) },
-  { id: "cruiser", label: "Cruiser and BJRC", test: r => /bjrc|cruise|passage/i.test(r.text) },
-  { id: "training", label: "Training and RYA", test: r => /rya|training/i.test(r.text) }
-];
-
-const rows = DATA.map(([iso, hw, ht, start, text, tag]) => {
-  const [y, m, d] = iso.split("-").map(Number);
-  return { iso, date: new Date(y, m - 1, d), hw, ht, start, text, tag: tag || "" };
-});
-const byIso = Object.fromEntries(rows.map(r => [r.iso, r]));
-const minH = Math.min(...rows.map(r => r.ht));
-const maxH = Math.max(...rows.map(r => r.ht));
-
-const now = new Date();
-const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-const DAY = 86400000;
-const state = { month: "all", chip: "all", preset: null };
-let clickable = [];
+/* ------------------------------------------------------------------
+   Settings. Everything else comes from programme.csv, so a new season
+   only needs a new programme.csv (same column headings).
+------------------------------------------------------------------ */
+const CONFIG = {
+  version: "2.4.0", released: "2026-09-20",   // bump both here and in sw.js, and add a line to CHANGELOG.md
+  filePattern: "programme-{year}.csv",  // one file per season: programme-2026.csv, programme-2027.csv, ...
+  yearsBack: 1, yearsAhead: 2,          // which years to look for around the current year
+  legacyFile: "programme.csv",          // an older single file: used for its own year if no dated file covers it
+  name: "BSC Sailing Calendar",
+  venue: "Blackwater Sailing Club, Heybridge Basin, Maldon",   // location on calendar entries
+  defaultMinutes: 180,                                         // length of a timed calendar entry when no finish time is given
+  forecast: { lat: 51.737, lon: 0.715, place: "Heybridge Basin" },
+  weekly: ["Mirror sailing", "Beach Club"],   // recurring weekly sessions (can be hidden)
+  bigTidePercentile: 0.9
+};
 
 const $ = id => document.getElementById(id);
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const fmtLong = new Intl.DateTimeFormat("en-GB", { weekday: "long", day: "numeric", month: "long" });
 const fmtWd = new Intl.DateTimeFormat("en-GB", { weekday: "short" });
 const fmtShort = { format: d => fmtWd.format(d) + " " + d.getDate() + " " + MONTHS[d.getMonth()].slice(0, 3) };
+const now = new Date();
+const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+const DAY = 86400000;
 
+function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
+function pillBtn(label, onClick) { const b = el("button", "pill", label); b.type = "button"; b.addEventListener("click", onClick); return b; }
 function daysFrom(d) { return Math.round((d - today) / DAY); }
-function gaugePct(h) { return Math.max(6, Math.min(100, ((h - 1.9) / 1.8) * 100)); }
-function hasContent(r) { return r.start !== "" || r.text !== "" || r.tag !== ""; }
-function isFuture(r) { return r.date >= today; }
-function whenLabel(r) {
-  const n = daysFrom(r.date);
-  return n === 0 ? "Today" : n === 1 ? "Tomorrow" : "In " + n + " days";
+function plural(n, w) { return n + " " + w + (n === 1 ? "" : "s"); }
+function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+/* ---------- CSV ---------- */
+function parseCSV(text) {
+  text = text.replace(/^\uFEFF/, "");
+  const rows = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) {
+      if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c;
+    } else if (c === '"') q = true;
+    else if (c === ",") { row.push(f); f = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); f = ""; if (row.some(x => x !== "")) rows.push(row); row = []; }
+    else f += c;
+  }
+  if (f !== "" || row.length) { row.push(f); if (row.some(x => x !== "")) rows.push(row); }
+  const head = rows.shift().map(h => h.trim());
+  return rows.map(r => Object.fromEntries(head.map((h, i) => [h, (r[i] || "").trim()])));
 }
-function el(tag, cls, text) {
-  const n = document.createElement(tag);
-  if (cls) n.className = cls;
-  if (text !== undefined) n.textContent = text;
-  return n;
+
+/* ---------- data ---------- */
+let DAYS = [], FLEETS = [], MIN_H = 2, MAX_H = 4, BIG_TIDE = 3.4, YEAR = now.getFullYear();
+let SEASONS = [], SEASON = null, seasonFinished = false;
+const state = { month: "all", chip: "all", preset: null, fleets: [] };   // fleets: [] means all fleets
+let VOCAB = [];
+
+function buildData(records, year) {
+  const map = new Map();
+  for (const r of records) {
+    const rec = {
+      date: r["Date"], hw: r["High water"], ht: parseFloat(r["Tide height (m)"]), src: r["Tide source"], start: r["Start time"],
+      fleet: r["Fleet"], order: parseInt(r["Race start order"], 10) || 0, event: r["Event"], training: r["Training"],
+      gp: /^true$/i.test(r["GP weekend"] || r["Grand Prix weekend"] || ""), series: r["Race / series"], nums: r["Race no(s)"], detail: r["Detail"]
+    };
+    if (!/^\d{4}-\d\d-\d\d$/.test(rec.date)) continue;
+    let d = map.get(rec.date);
+    if (!d) {
+      const [y, m, dd] = rec.date.split("-").map(Number);
+      d = { iso: rec.date, date: new Date(y, m - 1, dd), hw: rec.hw, ht: rec.ht, est: rec.src === "Estimated", gp: false, rows: [] };
+      map.set(rec.date, d);
+    }
+    if (rec.gp) d.gp = true;
+    d.rows.push(rec);
+  }
+  DAYS = [...map.values()].sort((a, b) => a.date - b.date);
+  const fl = new Map();
+  records.forEach(r => { const f = r["Fleet"], o = parseInt(r["Race start order"], 10) || 0; if (!f || !o) return; if (!fl.has(f)) fl.set(f, { order: o, idx: fl.size }); else if (o < fl.get(f).order) fl.get(f).order = o; });
+  records.forEach(r => { const f = r["Fleet"]; if (f && !fl.has(f)) fl.set(f, { order: 99, idx: fl.size }); });
+  FLEETS = [...fl.entries()].sort((a, b) => a[1].order - b[1].order || a[1].idx - b[1].idx).map(x => x[0]);
+  const hs = DAYS.filter(d => !d.est && !isNaN(d.ht)).map(d => d.ht).sort((a, b) => a - b);
+  const all = DAYS.filter(d => !isNaN(d.ht)).map(d => d.ht);
+  MIN_H = all.length ? Math.min(...all) : 2; MAX_H = all.length ? Math.max(...all) : 4;
+  BIG_TIDE = hs.length ? hs[Math.min(hs.length - 1, Math.floor(hs.length * CONFIG.bigTidePercentile))] : 3.4;
+  YEAR = year;
+  const vocab = new Map();
+  DAYS.forEach(d => { const seen = new Set(); d.rows.forEach(r => [r.series, r.event, r.training].forEach(t => { if (t && t !== "No racing") seen.add(t); })); seen.forEach(t => vocab.set(t, (vocab.get(t) || 0) + 1)); });
+  VOCAB = [...vocab.keys()];
 }
-function pillBtn(label, onClick) {
-  const b = el("button", "pill", label);
-  b.type = "button";
-  b.addEventListener("click", onClick);
-  return b;
+
+/* ---------- grouping a day's rows into items ---------- */
+function orderText(list) {
+  const o = [...new Set(list.map(x => x.order))].sort((a, b) => a - b);
+  if (o.length === 1) return String(o[0]);
+  const consecutive = o.every((v, i) => i === 0 || v === o[i - 1] + 1);
+  return consecutive ? o[0] + "–" + o[o.length - 1] : o.join(",");
+}
+function fleetsText(fleets) {
+  if (!fleets.length) return "";
+  if (fleets.length === FLEETS.length) return "All fleets";
+  const missing = FLEETS.filter(f => !fleets.includes(f));
+  if (fleets.length >= 5 && missing.length <= 2) return "All fleets except " + missing.join(", ");
+  return fleets.join(", ");
+}
+function groupDay(day, opts) {
+  const rows = day.rows.filter(r => opts.weekly || !CONFIG.weekly.includes(r.event));
+  const race = new Map(), evs = new Map(), train = new Map();
+  let noRacing = false;
+  for (const r of rows) {
+    if (r.event === "No racing") { noRacing = true; continue; }
+    if (r.training) {
+      const k = r.training + "|" + r.event + "|" + r.start + "|" + r.detail;
+      if (!train.has(k)) train.set(k, { kind: "train", label: r.training, tag: r.event, start: r.start, detail: r.detail });
+      continue;
+    }
+    if (r.order) {
+      const k = [r.event, r.series, r.nums].join("|");
+      if (!race.has(k)) race.set(k, { kind: "race", event: r.event, series: r.series, nums: r.nums, start: r.start, fleets: [], rows: [] });
+      const g = race.get(k); g.fleets.push(r.fleet); g.rows.push({ fleet: r.fleet, order: r.order });
+      continue;
+    }
+    if (r.event) {
+      const k = [r.event, r.series, r.start, r.detail].join("|");
+      if (!evs.has(k)) evs.set(k, { kind: "event", label: r.series || r.event, tag: r.series ? r.event : "", start: r.start, detail: r.detail, fleets: [] });
+      if (r.fleet) evs.get(k).fleets.push(r.fleet);
+    }
+  }
+  const racing = [...race.values()].map(g => {
+    const all = g.fleets.length >= FLEETS.length - 2 && g.fleets.length >= 5;
+    const label = g.series ? (g.series + (g.nums ? " " + g.nums : "")) : (g.event + (g.nums ? " " + g.nums : ""));
+    return Object.assign(g, { all, label, tag: g.series ? g.event : "", min: Math.min(...g.rows.map(x => x.order)), orderText: orderText(g.rows), fleetsText: fleetsText(g.fleets) });
+  }).sort((a, b) => a.min - b.min || a.label.localeCompare(b.label));
+  return { racing, events: [...evs.values()], training: [...train.values()], noRacing };
+}
+function forMe(item, sel) {
+  if (!sel.length) return true;
+  if (item.kind === "race") return item.fleets.some(f => sel.includes(f));
+  if (item.kind === "event") return !item.fleets.length || item.fleets.some(f => sel.includes(f));
+  return true;
+}
+function mySel(item) { return item.rows ? item.rows.filter(x => state.fleets.includes(x.fleet)) : []; }
+function loadFleets() {
+  try { const v = JSON.parse(storeGet("bsc-fleets") || "null"); if (Array.isArray(v)) return FLEETS.filter(f => v.includes(f)); } catch (e) {}
+  const old = storeGet("bsc-fleet");            // earlier versions saved a single fleet
+  return old && FLEETS.includes(old) ? [old] : [];
+}
+function saveFleets() { storeSet("bsc-fleets", JSON.stringify(state.fleets)); }
+function visibleItems(day) {
+  const opts = { weekly: $("showWeekly").checked };
+  const g = groupDay(day, opts);
+  const f = state.fleets;
+  return { racing: g.racing.filter(i => forMe(i, f)), events: g.events.filter(i => forMe(i, f)), training: g.training, noRacing: g.noRacing };
+}
+function hasContent(it) { return it.racing.length || it.events.length || it.training.length; }
+function noRacingText(day, it) {
+  if (state.fleets.length && !it.racing.length && groupDay(day, { weekly: true }).racing.length) return "Not racing for " + state.fleets.join(", ");
+  return "No racing";
+}
+function dayStart(day) {
+  const r = day.rows.find(x => x.order && /^\d\d:\d\d$/.test(x.start));
+  return r ? r.start : "";
+}
+
+/* ---------- tokens ---------- */
+function tokenEl(item) {
+  const t = el("li", "tok " + item.kind);
+  if (item.kind === "race") {
+    const sel = mySel(item);
+    if (sel.length) t.classList.add("mine");
+    t.appendChild(el("span", "num", sel.length ? orderText(sel) : (item.all ? "All" : item.orderText)));
+    t.appendChild(el("span", "lbl", item.label));
+    if (item.tag) t.appendChild(el("span", "tag", item.tag));
+    if (!state.fleets.length) {
+      if (item.all) t.appendChild(el("span", "f", item.fleetsText));
+      else if (item.fleets.length > 1) t.appendChild(el("span", "f", item.fleets.join(", ")));
+    } else if (item.all) t.appendChild(el("span", "f", "all fleets"));
+    else if (state.fleets.length > 1) t.appendChild(el("span", "f", sel.map(x => x.fleet).join(", ")));
+  } else if (item.kind === "event") {
+    t.appendChild(el("span", "lbl", item.label));
+    if (item.tag) t.appendChild(el("span", "tag", item.tag));
+    if (item.start) t.appendChild(el("span", "t", item.start === "TBC" ? "start TBC" : item.start));
+    if (item.fleets.length) t.appendChild(el("span", "f", fleetsText(item.fleets)));
+  } else {
+    t.appendChild(el("span", "num", "T"));
+    t.appendChild(el("span", "lbl", item.label));
+    if (item.tag) t.appendChild(el("span", "tag", item.tag));
+    t.appendChild(el("span", "t", item.start === "TBC" || !item.start ? "start TBC" : item.start));
+  }
+  return t;
+}
+function tokenList(it) {
+  const ul = el("ul", "tokens");
+  [...it.racing, ...it.events, ...it.training].forEach(i => ul.appendChild(tokenEl(i)));
+  return ul;
 }
 function gauge(h) {
-  const g = el("span", "gauge");
-  g.setAttribute("role", "img");
-  g.setAttribute("aria-label", "High water " + h.toFixed(1) + " metres");
-  const i = document.createElement("i");
-  i.style.width = gaugePct(h) + "%";
-  g.appendChild(i);
-  return g;
+  const g = el("span", "gauge"); g.setAttribute("role", "img"); g.setAttribute("aria-label", "High water " + h.toFixed(1) + " metres");
+  const i = document.createElement("i"); i.style.width = Math.max(6, Math.min(100, ((h - MIN_H + 0.1) / (MAX_H - MIN_H + 0.2)) * 100)) + "%"; g.appendChild(i); return g;
 }
-function toMin(t) { const [h, m] = t.split(":").map(Number); return h * 60 + m; }
-function span(mins) {
-  const h = Math.floor(mins / 60), m = mins % 60;
-  return h === 0 ? m + " min" : h + " h " + String(m).padStart(2, "0") + " min";
+function tideBlock(day) {
+  const t = el("div", "tide");
+  if (day.hw) t.appendChild(el("span", "hw", "HW " + (day.est ? "≈" : "") + day.hw));
+  if (!isNaN(day.ht)) { t.appendChild(gauge(day.ht)); t.appendChild(el("span", day.est ? "est" : "", (day.est ? "≈" : "") + day.ht.toFixed(1) + " m")); }
+  return t;
 }
-function hayText(r) { return (r.text + " " + r.tag).toLowerCase(); }
 
-/* ---------- Presets and search terms ---------- */
+/* ---------- next on ---------- */
+function isToday(d) { return d.date.getTime() === today.getTime(); }
+function renderNext() {
+  const box = $("next"); box.textContent = "";
+  const up = DAYS.filter(d => d.date >= today).map(d => ({ d, it: visibleItems(d) })).filter(x => hasContent(x.it));
+  box.hidden = false;
+  if (!up.length) {
+    box.appendChild(el("p", "date-big", "The " + YEAR + " programme has finished."));
+    const later = SEASONS.find(x => x.year > YEAR);
+    if (later) { box.appendChild(el("p", "", "The " + later.year + " programme is available.")); const b = pillBtn("See " + later.year, () => activateSeason(later)); b.style.marginTop = "10px"; box.appendChild(b); }
+    else box.appendChild(el("p", "", "See the club website for the next dates."));
+    return;
+  }
+  const { d, it } = up[0];
+  const n = daysFrom(d.date);
+  box.appendChild(el("p", "when", "Next on: " + (n === 0 ? "Today" : n === 1 ? "Tomorrow" : "In " + n + " days")));
+  box.appendChild(el("p", "date-big", fmtLong.format(d.date)));
+  if (d.gp) { const p = el("p", ""); p.appendChild(el("span", "badge gp", "Grand Prix weekend")); box.appendChild(p); }
+  box.appendChild(tokenList(it));
+  const facts = el("div", "next-facts");
+  const st = dayStart(d);
+  const f1 = el("div", "fact"); f1.appendChild(el("b", "", it.racing.length ? (st || "TBC") : "No racing")); f1.appendChild(el("span", "", it.racing.length ? "First start" : (state.fleets.length && st ? "for " + state.fleets.join(", ") : "Club racing")));
+  const f2 = el("div", "fact"); f2.appendChild(el("b", "", d.hw ? (d.est ? "≈" : "") + d.hw : "–")); f2.appendChild(el("span", "", "High water" + (isNaN(d.ht) ? "" : ", " + (d.est ? "≈" : "") + d.ht.toFixed(1) + " m")));
+  facts.append(f1, f2, pillBtn("See details", () => openDetail(d, up.map(x => x.d))));
+  box.appendChild(facts);
+}
+
+/* ---------- controls ---------- */
+function syncPills(box, id) { box.querySelectorAll(".pill").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === id ? "true" : "false")); }
+const CHIPS = [
+  { id: "all", label: "All days", test: (d, it) => true },
+  { id: "racing", label: "Racing", test: (d, it) => it.racing.length > 0 },
+  { id: "gp", label: "Grand Prix", test: (d, it) => d.gp },
+  { id: "training", label: "Training", test: (d, it) => it.training.length > 0 },
+  { id: "events", label: "Events", test: (d, it) => it.events.some(e => !CONFIG.weekly.includes(e.label) && !CONFIG.weekly.includes(e.tag)) }
+];
 function weekendRange() {
-  const dow = today.getDay();
-  const y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
+  const dow = today.getDay(), y = today.getFullYear(), m = today.getMonth(), d = today.getDate();
   const start = (dow === 6 || dow === 0) ? today : new Date(y, m, d + (6 - dow));
   const end = start.getDay() === 6 ? new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1) : start;
   return [start, end];
 }
 const WK = weekendRange();
-const PRESETS = [
-  { id: "weekend", label: "This weekend", test: r => r.date >= WK[0] && r.date <= WK[1] },
-  { id: "week", label: "Next 7 days", test: r => isFuture(r) && daysFrom(r.date) <= 6 },
-  { id: "bigtide", label: "Tides of 3.4 m or more", test: r => r.ht >= 3.4 }
-];
-const FEATURED = ["Regatta", "Fiz Fax", "Evening Race", "Cadet", "Friday Sailing"];
-const TERMS = ["Adult RYA","Albacore Bowl","Autumn Cup","Autumn Series","Barbrook Trophy","BJRC","Boyden Bell","Britannia","Cadet","Cadet Week","Calamity Cup","Cat Trophy","Challenge Salver","Club Week","Copland Cup","Coronation Cup","Down River Cup","Dyer Cup","Easter Cup","Easter Series","Evening Race","Ewart Cup","Fendick Tankard","Figleaf Flagon","Fireball","Fiz Fax","Foster Bowl","Friday Sailing","Grand Prix Final","Gray Cup","Heron Cup","Icicle Cup","Joss Series","Jubilee","Leonora Bowl","Mirror Week","Norman Eve","Open Day","Osea Handicap","Pippin","Pursuit Race","Regatta","Round the Islands","Saturday Series","Spring Trophy","Summer Series","Swann Spoon","Wayfarer","Wings Trophy"];
-
-function countTerm(t) {
-  const needle = t.toLowerCase();
-  const pastOff = $("hidePast").checked;
-  return rows.filter(r => (!pastOff || isFuture(r)) && hayText(r).includes(needle)).length;
+function presets() {
+  return [
+    { id: "weekend", label: "This weekend", test: d => d.date >= WK[0] && d.date <= WK[1] },
+    { id: "week", label: "Next 7 days", test: d => d.date >= today && daysFrom(d.date) <= 6 },
+    { id: "bigtide", label: "Tides of " + BIG_TIDE.toFixed(1) + " m or more", test: d => d.ht >= BIG_TIDE && !d.est }
+  ];
 }
-function plural(n) { return n + (n === 1 ? " day" : " days"); }
-
-/* ---------- Suggestions dropdown ---------- */
-function buildSuggest() {
-  const q = $("q").value.trim().toLowerCase();
-  const box = $("suggest");
-  box.textContent = "";
-  const head = t => box.appendChild(el("p", "sug-head", t));
-  const item = (label, meta, onPick) => {
-    const b = el("button", "sug");
-    b.type = "button";
-    b.appendChild(el("span", "", label));
-    b.appendChild(el("small", "", meta));
-    b.addEventListener("click", onPick);
-    box.appendChild(b);
-  };
-  const pickTerm = t => () => { $("q").value = t; state.preset = null; closeSuggest(); render(); };
-  const pickPreset = p => () => { state.preset = p.id; $("q").value = ""; closeSuggest(); render(); };
-
-  if (!q) {
-    const ps = PRESETS
-      .map(p => ({ p, n: rows.filter(r => isFuture(r) && hasContent(r) && p.test(r)).length }))
-      .filter(x => x.n > 0);
-    if (ps.length) {
-      head("Quick filters");
-      ps.forEach(x => item(x.p.label, plural(x.n), pickPreset(x.p)));
-    }
-    const ts = FEATURED.map(t => ({ t, n: countTerm(t) })).filter(x => x.n > 0);
-    if (ts.length) {
-      head("Popular searches");
-      ts.forEach(x => item(x.t, plural(x.n), pickTerm(x.t)));
-    }
-  } else {
-    const words = q.split(/\s+/);
-    const matches = TERMS
-      .filter(t => words.every(w => t.toLowerCase().includes(w)))
-      .map(t => ({ t, n: countTerm(t) }))
-      .filter(x => x.n > 0)
-      .sort((a, b) => (b.t.toLowerCase().startsWith(q) - a.t.toLowerCase().startsWith(q)) || b.n - a.n)
-      .slice(0, 6);
-    if (matches.length) {
-      head("Races and events");
-      matches.forEach(x => item(x.t, plural(x.n), pickTerm(x.t)));
-    } else {
-      box.appendChild(el("p", "sug-empty", $("hidePast").checked ? "No upcoming races match that. Untick Hide past days to search the whole season." : "No races match that. Try a shorter word."));
-    }
-  }
-  return box.children.length > 0;
-}
-function openSuggest() {
-  if (buildSuggest()) {
-    $("suggest").hidden = false;
-    $("q").setAttribute("aria-expanded", "true");
-  }
-}
-function closeSuggest() {
-  $("suggest").hidden = true;
-  $("q").setAttribute("aria-expanded", "false");
-}
-function sugButtons() { return [...$("suggest").querySelectorAll(".sug")]; }
-
-/* ---------- Next on ---------- */
-function renderNext() {
-  const box = $("next");
-  box.textContent = "";
-  const upcoming = rows.filter(x => isFuture(x) && hasContent(x));
-  const r = upcoming[0];
-  if (!r) {
-    box.appendChild(el("p", "date-big", "The 2026 programme has finished."));
-    box.appendChild(el("p", "what", "See the club website for next season's dates."));
-    return;
-  }
-  box.appendChild(el("p", "when", "Next on: " + whenLabel(r)));
-  box.appendChild(el("p", "date-big", fmtLong.format(r.date)));
-  const what = [r.tag, r.text].filter(Boolean).join(" · ");
-  if (what) box.appendChild(el("p", "what", what));
-  const facts = el("div", "next-facts");
-  const f1 = el("div", "fact");
-  f1.appendChild(el("b", "", r.start || "No racing"));
-  f1.appendChild(el("span", "", r.start ? "Start" : "Racing"));
-  const f2 = el("div", "fact");
-  f2.appendChild(el("b", "", r.hw));
-  f2.appendChild(el("span", "", "High water, " + r.ht.toFixed(1) + " m"));
-  facts.append(f1, f2, pillBtn("See details", () => openDetail(r, upcoming)));
-  box.appendChild(facts);
-}
-
-/* ---------- Controls ---------- */
-function syncPills(box, id) {
-  box.querySelectorAll(".pill").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === id ? "true" : "false"));
-}
-function buildControls() {
-  const mBox = $("months");
-  const used = [...new Set(rows.map(r => r.date.getMonth()))];
-  [{ id: "all", label: "All months" }, ...used.map(m => ({ id: String(m), label: MONTHS[m] }))].forEach(o => {
+function buildPills() {
+  const mBox = $("months"); mBox.textContent = "";
+  const keys = [...new Set(DAYS.map(d => d.date.getFullYear() * 12 + d.date.getMonth()))];
+  [{ id: "all", label: "All months" }, ...keys.map(k => ({ id: String(k), label: MONTHS[k % 12] }))].forEach(o => {
     const b = pillBtn(o.label, () => { state.month = o.id; syncPills(mBox, o.id); render(); });
-    b.dataset.id = o.id;
-    b.setAttribute("aria-pressed", o.id === state.month ? "true" : "false");
-    mBox.appendChild(b);
+    b.dataset.id = o.id; b.setAttribute("aria-pressed", o.id === state.month ? "true" : "false"); mBox.appendChild(b);
   });
-  const cBox = $("chips");
+  const cBox = $("chips"); cBox.textContent = "";
   CHIPS.forEach(c => {
     const b = pillBtn(c.label, () => { state.chip = c.id; syncPills(cBox, c.id); render(); });
-    b.dataset.id = c.id;
-    b.setAttribute("aria-pressed", c.id === state.chip ? "true" : "false");
-    cBox.appendChild(b);
+    b.dataset.id = c.id; b.setAttribute("aria-pressed", c.id === state.chip ? "true" : "false"); cBox.appendChild(b);
   });
-
+  const fBox = $("fleets"); fBox.textContent = "";
+  state.fleets = loadFleets();
+  const allBtn = pillBtn("All fleets", () => { state.fleets = []; saveFleets(); refreshFleets(); });
+  allBtn.dataset.id = "all"; fBox.appendChild(allBtn);
+  FLEETS.forEach(f => {
+    const b = pillBtn(f, () => {
+      const set = new Set(state.fleets); set.has(f) ? set.delete(f) : set.add(f);
+      state.fleets = FLEETS.filter(x => set.has(x)); if (state.fleets.length === FLEETS.length) state.fleets = [];
+      saveFleets(); refreshFleets();
+    });
+    b.dataset.id = f; fBox.appendChild(b);
+  });
+  $("fleetbar").hidden = FLEETS.length === 0; updateFleetPills();
+}
+function updateFleetPills() {
+  $("fleets").querySelectorAll(".pill").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === "all" ? String(!state.fleets.length) : String(state.fleets.includes(b.dataset.id))));
+  $("fleetReset").hidden = !state.fleets.length; fleetHint();
+}
+function refreshFleets() { updateFleetPills(); renderNext(); render(); }
+function buildSeasonBar() {
+  const box = $("seasons"); box.textContent = "";
+  SEASONS.forEach(x => {
+    const b = pillBtn(String(x.year), () => { if (x !== SEASON) activateSeason(x); });
+    b.dataset.id = String(x.year); b.setAttribute("aria-pressed", x === SEASON ? "true" : "false"); box.appendChild(b);
+  });
+  $("seasonbar").hidden = SEASONS.length < 2;
+}
+function initControls() {
   const q = $("q");
   q.addEventListener("input", () => { render(); openSuggest(); });
   q.addEventListener("focus", openSuggest);
@@ -676,200 +582,267 @@ function buildControls() {
     if (e.key === "Escape") closeSuggest();
   });
   $("suggest").addEventListener("keydown", e => {
-    const btns = sugButtons();
-    const i = btns.indexOf(document.activeElement);
+    const btns = sugButtons(), i = btns.indexOf(document.activeElement);
     if (e.key === "ArrowDown" && i < btns.length - 1) { e.preventDefault(); btns[i + 1].focus(); }
     if (e.key === "ArrowUp") { e.preventDefault(); (i > 0 ? btns[i - 1] : q).focus(); }
     if (e.key === "Escape") { closeSuggest(); q.focus(); }
   });
   document.addEventListener("pointerdown", e => { if (!$("searchWrap").contains(e.target)) closeSuggest(); });
+  $("fleetReset").addEventListener("click", () => { state.fleets = []; saveFleets(); refreshFleets(); });
   $("hidePast").addEventListener("change", render);
   $("showNR").addEventListener("change", render);
+  $("showWeekly").addEventListener("change", () => { renderNext(); render(); });
+}
+function fleetHint() {
+  $("fleethint").textContent = state.fleets.length ? "Showing " + state.fleets.join(", ") + ". Tap a fleet again to remove it, or Reset for all fleets. The red number is your start order (1 = first)." : "Pick one or more fleets to see only their races and start order.";
 }
 
-/* ---------- List ---------- */
+/* ---------- suggestions ---------- */
+function countTerm(t) {
+  const needle = t.toLowerCase(), pastOff = $("hidePast").checked;
+  return DAYS.filter(d => (!pastOff || d.date >= today) && d.rows.some(r => [r.series, r.event, r.training].some(x => x.toLowerCase() === needle))).length;
+}
+function buildSuggest() {
+  const q = $("q").value.trim().toLowerCase(), box = $("suggest"); box.textContent = "";
+  const head = t => box.appendChild(el("p", "sug-head", t));
+  const item = (label, meta, pick) => { const b = el("button", "sug"); b.type = "button"; b.appendChild(el("span", "", label)); b.appendChild(el("small", "", meta)); b.addEventListener("click", pick); box.appendChild(b); };
+  const pickTerm = t => () => { $("q").value = t; state.preset = null; closeSuggest(); render(); };
+  const pickPreset = p => () => { state.preset = p.id; $("q").value = ""; closeSuggest(); render(); };
+  if (!q) {
+    const ps = presets().map(p => ({ p, n: DAYS.filter(d => d.date >= today && hasContent(visibleItems(d)) && p.test(d)).length })).filter(x => x.n > 0);
+    if (ps.length) { head("Quick filters"); ps.forEach(x => item(x.p.label, plural(x.n, "day"), pickPreset(x.p))); }
+    const ts = VOCAB.filter(t => !CONFIG.weekly.includes(t)).map(t => ({ t, n: countTerm(t) })).filter(x => x.n > 0).sort((a, b) => b.n - a.n).slice(0, 5);
+    if (ts.length) { head("Popular searches"); ts.forEach(x => item(x.t, plural(x.n, "day"), pickTerm(x.t))); }
+  } else {
+    const words = q.split(/\s+/);
+    const matches = VOCAB.filter(t => words.every(w => t.toLowerCase().includes(w))).map(t => ({ t, n: countTerm(t) })).filter(x => x.n > 0)
+      .sort((a, b) => (b.t.toLowerCase().startsWith(q) - a.t.toLowerCase().startsWith(q)) || b.n - a.n).slice(0, 6);
+    if (matches.length) { head("Races and events"); matches.forEach(x => item(x.t, plural(x.n, "day"), pickTerm(x.t))); }
+    else box.appendChild(el("p", "sug-empty", $("hidePast").checked ? "Nothing upcoming matches that. Untick Hide past days to search the whole season." : "Nothing matches that. Try a shorter word."));
+  }
+  return box.children.length > 0;
+}
+function openSuggest() { if (buildSuggest()) { $("suggest").hidden = false; $("q").setAttribute("aria-expanded", "true"); } }
+function closeSuggest() { $("suggest").hidden = true; $("q").setAttribute("aria-expanded", "false"); }
+function sugButtons() { return [...$("suggest").querySelectorAll(".sug")]; }
+
+/* ---------- list ---------- */
+let clickable = [];
+function dayText(d) {
+  return [fmtLong.format(d.date), d.gp ? "grand prix gp" : "", ...d.rows.map(r => [r.series, r.nums, r.event, r.training, r.fleet, r.detail, r.start].join(" "))].join(" ").toLowerCase();
+}
 function render() {
-  const q = $("q").value.trim().toLowerCase();
-  const hidePast = $("hidePast").checked;
-  const showNR = $("showNR").checked;
-  const chip = CHIPS.find(c => c.id === state.chip);
-  const preset = PRESETS.find(p => p.id === state.preset);
-
-  const shown = rows.filter(r => {
-    const isToday = r.date.getTime() === today.getTime();
-    if (state.month !== "all" && String(r.date.getMonth()) !== state.month) return false;
-    if (hidePast && r.date < today) return false;
-    if (!showNR && !hasContent(r) && !isToday) return false;
-    if (!chip.test(r)) return false;
-    if (preset && !preset.test(r)) return false;
-    if (q) {
-      const hay = [r.text, r.tag, fmtLong.format(r.date), r.start, r.hw].join(" ").toLowerCase();
-      if (!q.split(/\s+/).every(w => hay.includes(w))) return false;
-    }
-    return true;
-  });
-  clickable = shown.filter(isFuture);
-
-  const count = $("count");
-  count.textContent = "";
-  count.appendChild(el("span", "", plural(shown.length) + " shown." + (clickable.length ? " Tap a day for details." : "")));
+  const q = $("q").value.trim().toLowerCase(), hidePast = $("hidePast").checked, showNR = $("showNR").checked;
+  const chip = CHIPS.find(c => c.id === state.chip), preset = presets().find(p => p.id === state.preset);
+  const shown = [];
+  for (const d of DAYS) {
+    const isT = isToday(d);
+    if (state.month !== "all" && String(d.date.getFullYear() * 12 + d.date.getMonth()) !== state.month) continue;
+    if (hidePast && d.date < today) continue;
+    const it = visibleItems(d);
+    const content = hasContent(it);
+    if (!content && !(it.noRacing && showNR) && !isT) continue;
+    if (!chip.test(d, it)) continue;
+    if (preset && !preset.test(d)) continue;
+    if (q && !q.split(/\s+/).every(w => dayText(d).includes(w))) continue;
+    shown.push({ d, it });
+  }
+  clickable = shown.filter(x => x.d.date >= today || seasonFinished).map(x => x.d);
+  const count = $("count"); count.textContent = "";
+  count.appendChild(el("span", "", plural(shown.length, "day") + " shown." + (clickable.length ? " Tap a day for details." : "")));
   if (preset) count.appendChild(pillBtn("Clear filter: " + preset.label, () => { state.preset = null; render(); }));
-
-  const list = $("list");
-  list.textContent = "";
+  if (clickable.length) count.appendChild(pillBtn("Add " + plural(clickable.length, "day") + " to calendar", () => exportDays(clickable, $("calnote"))));
+  $("calnote").textContent = "";
+  const list = $("list"); list.textContent = "";
   if (!shown.length) {
-    const e = el("div", "empty", "Nothing matches. Clear the search, pick another month, or turn on Show no-racing days.");
+    const e = el("div", "empty", "Nothing matches. Clear the search, pick another month or fleet, or turn on Show no-racing days.");
     e.appendChild(document.createElement("br"));
     const b = pillBtn("Reset filters", () => {
-      $("q").value = ""; state.month = "all"; state.chip = "all"; state.preset = null;
-      $("hidePast").checked = false; $("showNR").checked = false;
-      syncPills($("months"), "all"); syncPills($("chips"), "all"); render();
+      $("q").value = ""; state.month = "all"; state.chip = "all"; state.preset = null; state.fleets = []; saveFleets();
+      $("hidePast").checked = false; $("showNR").checked = false; $("showWeekly").checked = true;
+      syncPills($("months"), "all"); syncPills($("chips"), "all"); updateFleetPills(); renderNext(); render();
     });
-    b.style.marginTop = "10px";
-    e.appendChild(b);
-    list.appendChild(e);
-    setStickyOffset();
-    return;
+    b.style.marginTop = "10px"; e.appendChild(b); list.appendChild(e); return;
   }
-
-  let curMonth = -1, ul = null, head = null, n = 0;
-  const closeMonth = () => { if (head) head.querySelector("span").textContent = plural(n); };
-  shown.forEach(r => {
-    const m = r.date.getMonth();
-    if (m !== curMonth) {
-      closeMonth();
-      curMonth = m; n = 0;
-      head = el("div", "month-head");
-      head.appendChild(el("h2", "", MONTHS[m]));
-      head.appendChild(el("span", ""));
-      list.appendChild(head);
-      ul = el("ul", "days");
-      list.appendChild(ul);
+  let curKey = null, ul = null, head = null, n = 0;
+  const closeMonth = () => { if (head) head.querySelector("span").textContent = plural(n, "day"); };
+  shown.forEach(({ d, it }) => {
+    const key = d.date.getFullYear() * 12 + d.date.getMonth();
+    if (key !== curKey) {
+      closeMonth(); curKey = key; n = 0;
+      head = el("div", "month-head"); head.appendChild(el("h2", "", MONTHS[d.date.getMonth()] + (new Set(DAYS.map(x => x.date.getFullYear())).size > 1 ? " " + d.date.getFullYear() : ""))); head.appendChild(el("span", ""));
+      list.appendChild(head); ul = el("ul", "days"); list.appendChild(ul);
     }
     n++;
-    const isToday = r.date.getTime() === today.getTime();
-    const li = el("li", "day" + (r.start ? " racing" : "") + (isToday ? " today" : "") + (r.date < today ? " past" : ""));
-
-    const inner = isFuture(r) ? el("button", "day-btn") : el("div", "day-btn");
-    if (isFuture(r)) {
-      inner.type = "button";
-      inner.dataset.iso = r.iso;
-      inner.setAttribute("aria-haspopup", "dialog");
-    }
-
-    const date = el("div", "date");
-    date.appendChild(el("span", "wd", isToday ? "Today" : fmtWd.format(r.date)));
-    date.appendChild(el("span", "dn", String(r.date.getDate())));
-
+    const st = dayStart(d), isT = isToday(d), past = d.date < today && !seasonFinished;
+    const li = el("li", "day" + (it.racing.length ? " racing" : "") + (d.gp ? " gp" : "") + (isT ? " today" : "") + (past ? " past" : ""));
+    const inner = past ? el("div", "day-btn") : el("button", "day-btn");
+    if (!past) { inner.type = "button"; inner.dataset.iso = d.iso; inner.setAttribute("aria-haspopup", "dialog"); }
+    const date = el("div", "date"); date.appendChild(el("span", "wd", isT ? "Today" : fmtWd.format(d.date))); date.appendChild(el("span", "dn", String(d.date.getDate())));
     const what = el("div", "what");
-    if (r.tag) what.appendChild(el("span", "tag", r.tag));
-    if (r.text) what.appendChild(el("p", "events", r.text));
-    what.appendChild(r.start ? el("p", "start", "Start " + r.start) : el("p", "nr", "No racing"));
-
-    const tide = el("div", "tide");
-    tide.appendChild(el("span", "hw", "HW " + r.hw));
-    tide.appendChild(gauge(r.ht));
-    tide.appendChild(el("span", "", r.ht.toFixed(1) + " m"));
-
-    inner.append(date, what, tide);
-    li.appendChild(inner);
-    ul.appendChild(li);
+    if (d.gp) { const p = el("p", ""); p.appendChild(el("span", "badge gp", "Grand Prix weekend")); what.appendChild(p); }
+    if (it.racing.length) what.appendChild(el("p", "start", "First start " + (st || "TBC")));
+    else what.appendChild(el("p", "nr", noRacingText(d, it)));
+    if (hasContent(it)) what.appendChild(tokenList(it));
+    inner.append(date, what, tideBlock(d)); li.appendChild(inner); ul.appendChild(li);
   });
   closeMonth();
-  setStickyOffset();
 }
 
-function setStickyOffset() {
-  document.documentElement.style.setProperty("--controls-h", $("controls").offsetHeight + "px");
+/* ---------- add to calendar (.ics) ---------- */
+const ICS_TZ = ["BEGIN:VTIMEZONE", "TZID:Europe/London", "BEGIN:DAYLIGHT", "TZOFFSETFROM:+0000", "TZOFFSETTO:+0100", "TZNAME:BST", "DTSTART:19700329T010000", "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU", "END:DAYLIGHT",
+  "BEGIN:STANDARD", "TZOFFSETFROM:+0100", "TZOFFSETTO:+0000", "TZNAME:GMT", "DTSTART:19701025T020000", "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU", "END:STANDARD", "END:VTIMEZONE"];
+function p2(n) { return String(n).padStart(2, "0"); }
+function icsText(t) { return String(t).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n"); }
+function icsFold(line) {
+  const enc = new TextEncoder(); let out = "", cur = "", n = 0;
+  for (const ch of line) { const b = enc.encode(ch).length; if (n + b > 75) { out += cur + "\r\n"; cur = " "; n = 1; } cur += ch; n += b; }
+  return out + cur;
+}
+function icsDate(d) { return d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()); }
+function icsDT(d, hhmm) { const [h, m] = hhmm.split(":").map(Number); return icsDate(d) + "T" + p2(h) + p2(m) + "00"; }
+function addMin(hhmm, mins) { const t = Math.min(1439, toMin(hhmm) + mins); return p2(Math.floor(t / 60)) + ":" + p2(t % 60); }
+function slug(t) { return String(t).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40); }
+
+function dayCalendarEvents(day) {
+  const it = visibleItems(day), out = [];
+  const hw = day.hw ? "High water " + day.hw + (isNaN(day.ht) ? "" : " (" + day.ht.toFixed(1) + " m)") + (day.est ? ", estimated" : "") : "";
+  const tail = [hw, day.gp ? "Grand Prix weekend" : ""].filter(Boolean);
+  const range = d => { const m = /(\d{1,2}:\d\d)\s*[–-]\s*(\d{1,2}:\d\d)/.exec(d || ""); return m ? [m[1].padStart(5, "0"), m[2].padStart(5, "0")] : null; };
+  const push = (kind, summary, start, detail, lines, location) => {
+    const r = range(detail); let s = /^\d\d:\d\d$/.test(start) ? start : "", e = "";
+    if (!s && r && start !== "TBC") s = r[0];
+    if (s) e = r && r[0] === s ? r[1] : addMin(s, CONFIG.defaultMinutes);
+    out.push({ uid: day.iso + "-" + kind + "-" + slug(summary) + "@bsc-sailing-calendar", date: day.date, summary, start: s, end: e, desc: [...lines, ...tail].join("\n"), location: location || CONFIG.venue });
+  };
+  if (it.racing.length) {
+    const labels = it.racing.map(g => g.label), st = dayStart(day);
+    const lines = ["First start " + (st || "TBC")].concat(it.racing.map(g => {
+      const sel = mySel(g);
+      const who = g.all ? "all fleets" : (state.fleets.length && sel.length ? sel.map(x => x.fleet).join(", ") : g.fleets.join(", "));
+      return "Start order " + (sel.length ? orderText(sel) : g.orderText) + ", " + who + ": " + g.label;
+    }));
+    push("race", "Racing: " + labels.slice(0, 3).join(", ") + (labels.length > 3 ? " +" + (labels.length - 3) + " more" : ""), st, "", lines, "");
+  }
+  it.events.forEach(e => push("event", e.label + (e.start === "TBC" ? " (start TBC)" : ""), e.start, e.detail, [e.tag, e.fleets.length ? "For: " + fleetsText(e.fleets) : "", e.detail].filter(Boolean), /^BJRC/.test(e.label) && e.detail ? e.detail : ""));
+  it.training.forEach(t => push("train", t.label + (t.tag ? " (" + t.tag + ")" : "") + (t.start === "TBC" || !t.start ? " (start TBC)" : ""), t.start, t.detail, [t.detail].filter(Boolean), ""));
+  return out;
+}
+function buildICS(events, name) {
+  const L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//BSC Sailing Calendar//EN", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", "X-WR-CALNAME:" + icsText(name), "X-WR-TIMEZONE:Europe/London", ...ICS_TZ];
+  const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
+  events.forEach(e => {
+    L.push("BEGIN:VEVENT", "UID:" + e.uid, "DTSTAMP:" + stamp);
+    if (e.start) L.push("DTSTART;TZID=Europe/London:" + icsDT(e.date, e.start), "DTEND;TZID=Europe/London:" + icsDT(e.date, e.end));
+    else { const nx = new Date(e.date.getFullYear(), e.date.getMonth(), e.date.getDate() + 1); L.push("DTSTART;VALUE=DATE:" + icsDate(e.date), "DTEND;VALUE=DATE:" + icsDate(nx)); }
+    L.push("SUMMARY:" + icsText(e.summary));
+    if (e.location) L.push("LOCATION:" + icsText(e.location));
+    if (e.desc) L.push("DESCRIPTION:" + icsText(e.desc));
+    L.push("END:VEVENT");
+  });
+  L.push("END:VCALENDAR");
+  return L.map(icsFold).join("\r\n") + "\r\n";
+}
+function downloadICS(filename, text) {
+  const blob = new Blob([text], { type: "text/calendar;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+function exportDays(days, noteEl, suffix) {
+  const evs = days.flatMap(dayCalendarEvents);
+  if (!evs.length) { noteEl.textContent = "There is nothing to add for " + (days.length === 1 ? "this day" : "these days") + "."; return; }
+  const who = state.fleets.length ? "-" + state.fleets.map(slug).join("-") : "";
+  downloadICS("bsc-sailing-calendar-" + YEAR + who + (suffix || "") + ".ics", buildICS(evs, CONFIG.name + " " + YEAR + (state.fleets.length ? " (" + state.fleets.join(", ") + ")" : "")));
+  noteEl.textContent = "Saved " + plural(evs.length, "calendar entry").replace("entrys", "entries") + ". Open the file to add " + (evs.length === 1 ? "it" : "them") + " to your calendar.";
 }
 
-/* ---------- Day details ---------- */
+/* ---------- day details ---------- */
 const sheet = $("sheet");
 let nav = [], navIdx = 0;
-
-function openDetail(r, list) {
-  nav = list.length ? list : [r];
-  navIdx = Math.max(0, nav.findIndex(x => x.iso === r.iso));
-  fillSheet();
-  if (!sheet.open) sheet.showModal();
-  document.body.classList.add("lock");
+function openDetail(day, list) {
+  nav = list && list.length ? list : [day];
+  navIdx = Math.max(0, nav.findIndex(x => x.iso === day.iso));
+  fillSheet(); if (!sheet.open) sheet.showModal(); document.body.classList.add("lock");
 }
-
+function listRow(numText, main, sub, time, mine) {
+  const li = el("li", mine ? "mine" : "");
+  const n = el("div", "n"); if (numText) n.appendChild(el("span", "num", numText)); li.appendChild(n);
+  const c = el("div", "");
+  const m = el("div", "main", main); if (time) { m.appendChild(document.createTextNode("  ")); m.appendChild(el("span", "t", time)); } c.appendChild(m);
+  if (sub) c.appendChild(el("div", "sub2", sub));
+  li.appendChild(c); return li;
+}
 function fillSheet() {
-  const r = nav[navIdx];
-  $("sheet-when").textContent = whenLabel(r);
-  $("sheet-title").textContent = fmtLong.format(r.date);
-  const body = $("sheet-body");
-  body.textContent = "";
-
+  const day = nav[navIdx], n = daysFrom(day.date);
+  $("sheet-when").textContent = n === 0 ? "Today" : n === 1 ? "Tomorrow" : n > 1 ? "In " + n + " days" : "Past";
+  $("sheet-title").textContent = fmtLong.format(day.date);
+  const body = $("sheet-body"); body.textContent = "";
+  const g = groupDay(day, { weekly: true });
+  if (day.gp) { const p = el("p", ""); p.style.marginTop = "6px"; p.appendChild(el("span", "badge gp", "Grand Prix weekend")); body.appendChild(p); }
+  const st = dayStart(day);
   const facts = el("div", "sheet-facts");
-  [[r.start || "None", r.start ? "Start" : "Racing"], [r.hw, "High water"], [r.ht.toFixed(1) + " m", "Tide height"]].forEach(([v, l]) => {
-    const f = el("div", "");
-    f.appendChild(el("b", "", v));
-    f.appendChild(el("span", "", l));
-    facts.appendChild(f);
+  [[st || (g.racing.length ? "TBC" : "No racing"), st || g.racing.length ? "First start" : "Club racing"], [day.hw ? (day.est ? "≈" : "") + day.hw : "–", "High water"], [isNaN(day.ht) ? "–" : (day.est ? "≈" : "") + day.ht.toFixed(1) + " m", "Tide height"]].forEach(([v, l]) => {
+    const f = el("div", ""); f.appendChild(el("b", "", v)); f.appendChild(el("span", "", l)); facts.appendChild(f);
   });
   body.appendChild(facts);
+  if (day.est && day.hw) body.appendChild(el("p", "muted", "≈ This tide isn't printed in the programme, so it's an estimate."));
 
-  body.appendChild(el("h3", "", "On the programme"));
-  if (r.tag) body.appendChild(el("span", "tag", r.tag));
-  if (r.text) {
-    body.appendChild(el("p", "", (SPLIT[r.iso] || [r.text]).join(", ")));
-  } else if (!r.tag) {
-    body.appendChild(el("p", "muted", r.start ? "Nothing else is listed for this day." : "No racing, and nothing else is listed for this day."));
+  if (g.racing.length) {
+    body.appendChild(el("h3", "", "Racing, in start order"));
+    const ul = el("ul", "list");
+    g.racing.forEach(i => {
+      const sel = mySel(i), mine = sel.length > 0;
+      ul.appendChild(listRow(mine ? orderText(sel) : (i.all ? "All" : i.orderText), i.label + (i.tag ? " (" + i.tag + ")" : ""), i.all ? i.fleetsText : i.fleets.join(", "), i.start && i.start !== st ? i.start : "", mine));
+    });
+    body.appendChild(ul);
+  } else if (g.noRacing || !g.events.length && !g.training.length) body.appendChild(el("p", "", "No racing."));
+  if (g.events.length) {
+    body.appendChild(el("h3", "", "Events"));
+    const ul = el("ul", "list");
+    g.events.forEach(i => ul.appendChild(listRow("", i.label + (i.tag ? " (" + i.tag + ")" : ""), [i.fleets.length ? fleetsText(i.fleets) : "", i.detail].filter(Boolean).join(" · "), i.start ? (i.start === "TBC" ? "start TBC" : i.start) : "", false)));
+    body.appendChild(ul);
   }
-  if (!r.start && (r.text || r.tag)) body.appendChild(el("p", "muted", "No racing is scheduled for this day."));
+  if (g.training.length) {
+    body.appendChild(el("h3", "", "Training"));
+    const ul = el("ul", "list");
+    g.training.forEach(i => ul.appendChild(listRow("T", i.label + (i.tag ? " (" + i.tag + ")" : ""), i.detail, i.start === "TBC" || !i.start ? "start TBC" : i.start, false)));
+    body.appendChild(ul);
+  }
 
   body.appendChild(el("h3", "", "Forecast"));
-  const wxBox = el("div", "");
-  wxBox.id = "sheet-wx";
-  body.appendChild(wxBox);
-  fillWeather();
+  const wxBox = el("div", ""); wxBox.id = "sheet-wx"; body.appendChild(wxBox); fillWeather();
 
-  body.appendChild(el("h3", "", "Tide"));
-  const sc = el("div", "scale");
-  const fill = document.createElement("i");
-  fill.style.width = Math.max(4, ((r.ht - minH) / (maxH - minH)) * 100) + "%";
-  sc.appendChild(fill);
-  sc.setAttribute("role", "img");
-  sc.setAttribute("aria-label", "High water " + r.ht.toFixed(1) + " metres, on a scale from " + minH.toFixed(1) + " to " + maxH.toFixed(1));
-  body.appendChild(sc);
-  const lab = el("div", "scale-labels");
-  lab.appendChild(el("span", "", "Lowest in programme " + minH.toFixed(1) + " m"));
-  lab.appendChild(el("span", "", "Highest " + maxH.toFixed(1) + " m"));
-  body.appendChild(lab);
-
-  const lower = rows.filter(x => x.ht < r.ht).length;
-  const pct = Math.round((lower / rows.length) * 100);
-  let tideLine = "High water of " + r.ht.toFixed(1) + " m is higher than " + pct + "% of the days in the programme.";
-  if (r.ht === maxH) tideLine = "This is the highest tide in the programme (" + r.ht.toFixed(1) + " m).";
-  else if (r.ht === minH) tideLine = "This is the lowest tide in the programme (" + r.ht.toFixed(1) + " m).";
-  body.appendChild(el("p", "", tideLine));
-
-  if (r.start) {
-    const diff = toMin(r.hw) - toMin(r.start);
-    let rel;
-    if (diff === 0) rel = "High water is at the start.";
-    else if (diff > 0) rel = "High water is " + span(diff) + " after the start.";
-    else rel = "High water is " + span(-diff) + " before the start.";
-    body.appendChild(el("p", "", rel));
+  if (!isNaN(day.ht)) {
+    body.appendChild(el("h3", "", "Tide"));
+    const sc = el("div", "scale"); const fill = document.createElement("i");
+    fill.style.width = Math.max(4, ((day.ht - MIN_H) / (MAX_H - MIN_H || 1)) * 100) + "%"; sc.appendChild(fill);
+    sc.setAttribute("role", "img"); sc.setAttribute("aria-label", "High water " + day.ht.toFixed(1) + " metres, on a scale from " + MIN_H.toFixed(1) + " to " + MAX_H.toFixed(1));
+    body.appendChild(sc);
+    const lab = el("div", "scale-labels"); lab.appendChild(el("span", "", "Lowest in programme " + MIN_H.toFixed(1) + " m")); lab.appendChild(el("span", "", "Highest " + MAX_H.toFixed(1) + " m")); body.appendChild(lab);
+    const lower = DAYS.filter(x => x.ht < day.ht).length, pct = Math.round((lower / DAYS.length) * 100);
+    body.appendChild(el("p", "", "High water of " + day.ht.toFixed(1) + " m is higher than " + pct + "% of the days in the programme."));
+    if (st && day.hw) {
+      const diff = toMin(day.hw) - toMin(st);
+      body.appendChild(el("p", "", diff === 0 ? "High water is at the first start." : diff > 0 ? "High water is " + span(diff) + " after the first start." : "High water is " + span(-diff) + " before the first start."));
+    }
   }
-
-  const prev = $("sheet-prev"), next = $("sheet-next");
-  const p = nav[navIdx - 1], n = nav[navIdx + 1];
-  prev.disabled = !p; next.disabled = !n;
+  const prev = $("sheet-prev"), next = $("sheet-next"), p = nav[navIdx - 1], nx = nav[navIdx + 1];
+  const calBtn = $("sheet-cal"); $("sheet-calnote").textContent = "";
+  const hasCal = dayCalendarEvents(day).length > 0;
+  calBtn.parentElement.hidden = !hasCal;
+  calBtn.textContent = state.fleets.length ? "Add to calendar (my fleets)" : "Add this day to calendar";
+  prev.disabled = !p; next.disabled = !nx;
   prev.textContent = p ? "Earlier: " + fmtShort.format(p.date) : "No earlier day";
-  next.textContent = n ? "Later: " + fmtShort.format(n.date) : "No later day";
+  next.textContent = nx ? "Later: " + fmtShort.format(nx.date) : "No later day";
   sheet.scrollTop = 0;
 }
+function toMin(t) { const [h, m] = t.split(":").map(Number); return h * 60 + m; }
+function span(mins) { const h = Math.floor(mins / 60), m = mins % 60; return h === 0 ? m + " min" : h + " h " + String(m).padStart(2, "0") + " min"; }
 
-
-/* ---------- Weather (Open-Meteo, Heybridge Basin) ---------- */
-const WX_URL = "https://api.open-meteo.com/v1/forecast?latitude=51.737&longitude=0.715" +
-  "&hourly=temperature_2m,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,is_day" +
-  "&wind_speed_unit=kn&timezone=Europe%2FLondon&forecast_days=16";
+/* ---------- weather (Open-Meteo) ---------- */
+const WX_URL = "https://api.open-meteo.com/v1/forecast?latitude=" + CONFIG.forecast.lat + "&longitude=" + CONFIG.forecast.lon +
+  "&hourly=temperature_2m,weather_code,wind_speed_10m,wind_gusts_10m,wind_direction_10m,is_day&wind_speed_unit=kn&timezone=Europe%2FLondon&forecast_days=16";
 const WX = { status: "idle", byTime: {} };
-
 const ICONS = {
   sun: '<svg class="wx-icon i-sun" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="9" fill="currentColor"/><path d="M24 5v6M24 37v6M5 24h6M37 24h6M10.6 10.6l4.2 4.2M33.2 33.2l4.2 4.2M10.6 37.4l4.2-4.2M33.2 14.8l4.2-4.2" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/></svg>',
   moon: '<svg class="wx-icon i-moon" viewBox="0 0 48 48" aria-hidden="true"><path d="M31 8a17 17 0 1 0 9 30A14 14 0 0 1 31 8z" fill="currentColor"/></svg>',
@@ -878,122 +851,155 @@ const ICONS = {
   rain: '<svg class="wx-icon" viewBox="0 0 48 48" aria-hidden="true"><path class="i-cloud" d="M13 32h22a8 8 0 0 0 1.4-15.9A11 11 0 0 0 13.6 18 7 7 0 0 0 13 32z" fill="currentColor"/><path class="i-rain-drops" d="M16 36l-2.5 7M25 36l-2.5 7M34 36l-2.5 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" fill="none"/></svg>'
 };
 const WX_TEXT = { 0: "Clear", 1: "Mostly clear", 2: "Partly cloudy", 3: "Overcast", 45: "Fog", 48: "Fog", 51: "Drizzle", 53: "Drizzle", 55: "Drizzle", 56: "Freezing drizzle", 57: "Freezing drizzle", 61: "Light rain", 63: "Rain", 65: "Heavy rain", 66: "Freezing rain", 67: "Freezing rain", 71: "Snow", 73: "Snow", 75: "Snow", 77: "Snow", 80: "Light showers", 81: "Showers", 82: "Heavy showers", 85: "Snow showers", 86: "Snow showers", 95: "Thunderstorm", 96: "Thunderstorm", 99: "Thunderstorm" };
-function wxKind(code, isDay) {
-  if (code === 0 || code === 1) return isDay ? "sun" : "moon";
-  if (code === 2) return isDay ? "partly" : "cloud";
-  if (code === 3 || code === 45 || code === 48) return "cloud";
-  return "rain";
-}
+function wxKind(code, isDay) { if (code === 0 || code === 1) return isDay ? "sun" : "moon"; if (code === 2) return isDay ? "partly" : "cloud"; if (code === 3 || code === 45 || code === 48) return "cloud"; return "rain"; }
 const COMPASS = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
 function compass(deg) { return COMPASS[Math.round(deg / 22.5) % 16]; }
 const ARROW = '<svg class="wx-arrow" viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(DEGdeg)"><path d="M12 3v18M12 3l-6 7M12 3l6 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
-
 async function loadWeather() {
-  WX.status = "loading";
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 12000);
+  WX.status = "loading"; const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 12000);
   try {
-    const res = await fetch(WX_URL, { signal: ctl.signal });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const h = (await res.json()).hourly;
-    const map = {};
-    h.time.forEach((t, i) => {
-      map[t] = { temp: h.temperature_2m[i], code: h.weather_code[i], wind: h.wind_speed_10m[i], gust: h.wind_gusts_10m[i], dir: h.wind_direction_10m[i], day: h.is_day[i] === 1 };
-    });
-    WX.byTime = map;
-    WX.status = "ok";
-  } catch (e) {
-    WX.status = "error";
-  } finally {
-    clearTimeout(timer);
-  }
+    const res = await fetch(WX_URL, { signal: ctl.signal }); if (!res.ok) throw new Error("HTTP " + res.status);
+    const h = (await res.json()).hourly, map = {};
+    h.time.forEach((t, i) => { map[t] = { temp: h.temperature_2m[i], code: h.weather_code[i], wind: h.wind_speed_10m[i], gust: h.wind_gusts_10m[i], dir: h.wind_direction_10m[i], day: h.is_day[i] === 1 }; });
+    WX.byTime = map; WX.status = "ok";
+  } catch (e) { WX.status = "error"; } finally { clearTimeout(timer); }
   if (sheet.open) fillWeather();
 }
-
-function wxHours(r) {
+function wxHours(day) {
+  const race = dayStart(day), other = day.rows.map(r => r.start).filter(t => /^\d\d:\d\d$/.test(t)).sort()[0] || "";
+  const s = race || other;
   let hrs;
-  if (r.start) {
-    const [h, m] = r.start.split(":").map(Number);
-    const h0 = m >= 30 ? h + 1 : h;
-    hrs = [h0, h0 + 2, h0 + 4];
-  } else {
-    hrs = [9, 12, 15];
-  }
-  return hrs.filter(h => h <= 23);
+  if (s) { const [h, m] = s.split(":").map(Number), h0 = m >= 30 ? h + 1 : h; hrs = [h0, h0 + 2, h0 + 4]; } else hrs = [9, 12, 15];
+  return { hours: hrs.filter(h => h <= 23), note: race ? "From the first start (" + race + "), then 2 and 4 hours later." : other ? "From the earliest listed time (" + other + "), then 2 and 4 hours later." : "Morning, midday and afternoon." };
 }
-
 function fillWeather() {
-  const box = document.getElementById("sheet-wx");
-  if (!box) return;
-  const r = nav[navIdx];
-  box.textContent = "";
-  if (WX.status === "idle" || WX.status === "loading") {
-    box.appendChild(el("p", "muted", "Loading forecast…"));
-    return;
-  }
+  const box = $("sheet-wx"); if (!box) return;
+  const day = nav[navIdx]; box.textContent = "";
+  if (WX.status === "idle" || WX.status === "loading") { box.appendChild(el("p", "muted", "Loading forecast…")); return; }
   if (WX.status === "error") {
     box.appendChild(el("p", "muted", "The forecast couldn't be loaded. It needs an internet connection."));
-    const b = pillBtn("Try again", () => { box.textContent = ""; box.appendChild(el("p", "muted", "Loading forecast…")); loadWeather(); });
-    box.appendChild(b);
-    return;
+    box.appendChild(pillBtn("Try again", () => { box.textContent = ""; box.appendChild(el("p", "muted", "Loading forecast…")); loadWeather(); })); return;
   }
-  const cells = wxHours(r).map(h => ({ h, d: WX.byTime[r.iso + "T" + String(h).padStart(2, "0") + ":00"] })).filter(c => c.d);
-  if (!cells.length) {
-    box.appendChild(el("p", "muted", "There's no forecast for this day yet. It covers the next 16 days and gets less reliable further ahead."));
-    return;
-  }
-  box.appendChild(el("p", "muted", r.start ? "From the start time, then 2 and 4 hours later." : "Morning, midday and afternoon."));
+  const wh = wxHours(day);
+  const cells = wh.hours.map(h => ({ h, d: WX.byTime[day.iso + "T" + String(h).padStart(2, "0") + ":00"] })).filter(c => c.d);
+  if (!cells.length) { box.appendChild(el("p", "muted", "There's no forecast for this day yet. It covers the next 16 days and gets less reliable further ahead.")); return; }
+  box.appendChild(el("p", "muted", wh.note));
   const strip = el("div", "wx-strip");
   cells.forEach(({ h, d }) => {
-    const c = el("div", "wx");
-    c.appendChild(el("div", "wx-time", String(h).padStart(2, "0") + ":00"));
-    const ic = el("div", "");
-    ic.innerHTML = ICONS[wxKind(d.code, d.day)];
-    c.appendChild(ic);
-    c.appendChild(el("div", "wx-temp", Math.round(d.temp) + "°C"));
-    c.appendChild(el("div", "wx-desc", WX_TEXT[d.code] || ""));
-    const w = el("div", "wx-wind");
-    const line1 = el("div", "");
-    const dirSpan = el("span", "wx-dir");
-    dirSpan.setAttribute("aria-label", "Wind from " + compass(d.dir));
-    dirSpan.innerHTML = ARROW.replace("DEG", String((Math.round(d.dir) + 180) % 360));
-    dirSpan.appendChild(document.createTextNode(compass(d.dir)));
-    line1.appendChild(dirSpan);
-    line1.appendChild(document.createTextNode(" "));
-    line1.appendChild(el("b", "", Math.round(d.wind) + " kn"));
-    w.appendChild(line1);
-    w.appendChild(el("div", "wx-gust", "gusts " + Math.round(d.gust) + " kn"));
-    c.appendChild(w);
-    strip.appendChild(c);
+    const c = el("div", "wx"); c.appendChild(el("div", "wx-time", String(h).padStart(2, "0") + ":00"));
+    const ic = el("div", ""); ic.innerHTML = ICONS[wxKind(d.code, d.day)]; c.appendChild(ic);
+    c.appendChild(el("div", "wx-temp", Math.round(d.temp) + "°C")); c.appendChild(el("div", "wx-desc", WX_TEXT[d.code] || ""));
+    const w = el("div", "wx-wind"), l1 = el("div", ""), dirSpan = el("span", "wx-dir");
+    dirSpan.setAttribute("aria-label", "Wind from " + compass(d.dir)); dirSpan.innerHTML = ARROW.replace("DEG", String((Math.round(d.dir) + 180) % 360));
+    dirSpan.appendChild(document.createTextNode(compass(d.dir))); l1.appendChild(dirSpan); l1.appendChild(document.createTextNode(" ")); l1.appendChild(el("b", "", Math.round(d.wind) + " kn"));
+    w.appendChild(l1); w.appendChild(el("div", "wx-gust", "gusts " + Math.round(d.gust) + " kn")); c.appendChild(w); strip.appendChild(c);
   });
   box.appendChild(strip);
-  const credit = el("p", "wx-credit", "Wind speeds in knots, direction shown is where the wind comes from. Forecast for Heybridge Basin from ");
-  const a = el("a", "", "Open-Meteo.com");
-  a.href = "https://open-meteo.com/";
-  a.target = "_blank";
-  a.rel = "noopener";
-  credit.appendChild(a);
-  credit.appendChild(document.createTextNode("."));
+  const credit = el("p", "wx-credit", "Wind in knots; the arrow points where the wind is heading, the letters say where it comes from. Forecast for " + CONFIG.forecast.place + " from ");
+  const a = el("a", "", "Open-Meteo.com"); a.href = "https://open-meteo.com/"; a.target = "_blank"; a.rel = "noopener"; credit.appendChild(a); credit.appendChild(document.createTextNode("."));
   box.appendChild(credit);
 }
 
+/* ---------- events + start ---------- */
 $("list").addEventListener("click", e => {
-  const b = e.target.closest("button.day-btn");
-  if (!b) return;
-  openDetail(byIso[b.dataset.iso], clickable);
+  const b = e.target.closest("button.day-btn"); if (!b) return;
+  const d = DAYS.find(x => x.iso === b.dataset.iso); if (d) openDetail(d, clickable);
 });
 $("sheet-close").addEventListener("click", () => sheet.close());
+$("sheet-cal").addEventListener("click", () => exportDays([nav[navIdx]], $("sheet-calnote"), "-" + nav[navIdx].iso));
 $("sheet-prev").addEventListener("click", () => { if (navIdx > 0) { navIdx--; fillSheet(); } });
 $("sheet-next").addEventListener("click", () => { if (navIdx < nav.length - 1) { navIdx++; fillSheet(); } });
 sheet.addEventListener("click", e => { if (e.target === sheet) sheet.close(); });
 sheet.addEventListener("close", () => document.body.classList.remove("lock"));
 
-buildControls();
-renderNext();
-render();
-loadWeather();
-window.addEventListener("resize", setStickyOffset);
+function parseISO(iso) { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d); }
+async function fetchSeason(url, year) {
+  try {
+    const res = await fetch(url, { cache: "no-cache" });
+    if (!res.ok) return null;
+    const records = parseCSV(await res.text());
+    const dates = records.map(r => r["Date"]).filter(d => /^\d{4}-\d\d-\d\d$/.test(d)).sort();
+    if (!dates.length) return null;
+    return { year: year || Number(dates[0].slice(0, 4)), records, first: parseISO(dates[0]), last: parseISO(dates[dates.length - 1]), modified: res.headers.get("last-modified") || "" };
+  } catch (e) { return null; }
+}
+function pickSeason() { return SEASONS.find(x => x.last >= today) || SEASONS[SEASONS.length - 1]; }
 
+function activateSeason(s) {
+  SEASON = s; buildData(s.records, s.year);
+  seasonFinished = s.last < today;
+  $("hidePast").checked = !seasonFinished;
+  state.month = "all"; state.chip = "all"; state.preset = null; $("q").value = "";
+  document.title = CONFIG.name + " " + YEAR; $("title").textContent = CONFIG.name + " " + YEAR;
+  $("foot").hidden = false;
+  buildSeasonBar(); buildPills(); renderNext(); render(); showChecks(); renderSupport();
+}
+
+function shortDate(d) { return d.getDate() + " " + MONTHS[d.getMonth()].slice(0, 3) + " " + d.getFullYear(); }
+async function renderSupport() {
+  $("version").textContent = "Version " + CONFIG.version + " (" + shortDate(new Date(CONFIG.released + "T12:00:00")) + ")";
+  const ul = $("supportList"); ul.textContent = "";
+  const add = t => ul.appendChild(el("li", "", t));
+  add("App version: " + CONFIG.version + ", released " + CONFIG.released);
+  add("Seasons loaded: " + SEASONS.map(x => x.year + " (" + x.records.length + " rows" + (x.modified && !isNaN(new Date(x.modified)) ? ", file updated " + shortDate(new Date(x.modified)) : "") + ")").join("; "));
+  add("Showing: " + YEAR + (seasonFinished ? " (finished season)" : ""));
+  add("Offline copy: " + (navigator.serviceWorker && navigator.serviceWorker.controller ? "active" : "not active yet"));
+  try { const keys = (await caches.keys()).filter(k => k.startsWith("bsc-sailing")); add("Saved copy: " + (keys.join(", ") || "none")); } catch (e) {}
+  add("Online: " + (navigator.onLine ? "yes" : "no"));
+}
+
+/* Add ?check to the address to see a data check for the season on screen */
+function showChecks() {
+  const box = $("check");
+  if (!/[?&]check\b/.test(location.search)) { box.hidden = true; return; }
+  const recs = SEASON.records, out = [];
+  const need = ["Date", "High water", "Tide height (m)", "Start time", "Fleet", "Race start order", "Event", "Training", "GP weekend", "Race / series", "Race no(s)", "Detail"];
+  const cols = Object.keys(recs[0] || {}), missing = need.filter(c => !cols.includes(c));
+  if (missing.length) out.push([true, "Missing columns: " + missing.join(", ")]);
+  let badDate = 0, badStart = 0, badOrder = 0, noStart = 0, badGp = 0, otherYear = 0;
+  recs.forEach(r => {
+    const d = r["Date"], st = r["Start time"], o = r["Race start order"], g = r["GP weekend"];
+    if (!/^\d{4}-\d\d-\d\d$/.test(d)) { badDate++; return; }
+    if (Number(d.slice(0, 4)) !== SEASON.year) otherYear++;
+    if (st && !/^(\d\d:\d\d|TBC)$/.test(st)) badStart++;
+    if (o && !/^[1-9]$/.test(o)) badOrder++;
+    if (o && !/^\d\d:\d\d$/.test(st)) noStart++;
+    if (g && !/^(TRUE|FALSE)$/i.test(g)) badGp++;
+  });
+  const noTide = DAYS.filter(d => !d.hw || isNaN(d.ht)).length;
+  const clash = DAYS.filter(d => new Set(d.rows.map(r => r.hw)).size > 1 || new Set(d.rows.map(r => r.ht)).size > 1).length;
+  [[badDate, "rows with a Date that isn't YYYY-MM-DD (ignored)"], [badStart, "Start time values that aren't HH:MM or TBC"], [badOrder, "Race start order values that aren't 1-9"],
+   [noStart, "racing rows (with a start order) that have no HH:MM start time"], [badGp, "GP weekend values that aren't TRUE or FALSE"],
+   [noTide, "days with no high water time or tide height"], [clash, "days where rows disagree on the high water time or height"]].forEach(([n, t]) => { if (n) out.push([true, n + " " + t]); });
+  if (otherYear) out.push([false, otherYear + " rows have dates outside " + SEASON.year + " (fine for coaching or events, but check they're intended)"]);
+  const t = el("h2", "", "Data check: " + SEASON.year);
+  const ul = el("ul", "");
+  ul.appendChild(el("li", "", recs.length + " rows, " + DAYS.length + " days, " + fmtShort.format(SEASON.first) + " to " + fmtShort.format(SEASON.last) + " " + SEASON.last.getFullYear()));
+  ul.appendChild(el("li", "", "Fleets: " + (FLEETS.join(", ") || "none")));
+  if (!out.length) ul.appendChild(el("li", "", "No problems found."));
+  out.forEach(([bad, txt]) => ul.appendChild(el("li", bad ? "bad" : "", txt)));
+  box.textContent = ""; box.append(t, ul); box.hidden = false;
+}
+
+async function start() {
+  initControls();
+  const y0 = now.getFullYear(), tries = [];
+  for (let y = y0 - CONFIG.yearsBack; y <= y0 + CONFIG.yearsAhead; y++) tries.push(fetchSeason(CONFIG.filePattern.replace("{year}", y), y));
+  tries.push(fetchSeason(CONFIG.legacyFile, 0));
+  const found = (await Promise.all(tries)).filter(Boolean);
+  const seen = new Map();                                    // a dated file wins over the old single file for the same year
+  found.forEach(x => { if (!seen.has(x.year)) seen.set(x.year, x); });
+  SEASONS = [...seen.values()].sort((a, b) => a.year - b.year);
+  if (!SEASONS.length) {
+    const box = $("list"); box.textContent = "";
+    const p = el("div", "empty", "The programme couldn't be loaded. Check your connection and try again.");
+    p.appendChild(document.createElement("br")); const b = pillBtn("Try again", () => location.reload()); b.style.marginTop = "10px"; p.appendChild(b); box.appendChild(p);
+    return;
+  }
+  activateSeason(pickSeason());
+  loadWeather();
+}
+start();
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
   window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
 }

@@ -1,6 +1,7 @@
 // Network first, so updates show up straight away; falls back to the saved copy when offline.
-const CACHE = "bsc-sailing-2026-v2";
-const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
+const VERSION = "2.4.0";                     // keep in step with CONFIG.version in index.html
+const CACHE = "bsc-sailing-" + VERSION;
+const FILES = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "logo.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
@@ -26,6 +27,6 @@ self.addEventListener("fetch", e => {
         }
         return res;
       })
-      .catch(() => caches.match(e.request).then(hit => hit || caches.match("index.html")))
+      .catch(() => caches.match(e.request).then(hit => hit || (e.request.mode === "navigate" ? caches.match("index.html") : Response.error())))
   );
 });
