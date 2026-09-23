@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BSC Sailing Calendar app, version 2.9.1 (2026-09-20) -->
+<!-- BSC Sailing Calendar app, version 2.11.0 (2026-09-23) -->
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
@@ -160,7 +160,6 @@ dialog#marks::backdrop { background: rgba(8, 20, 30, 0.6); }
 .chart-box { position: relative; width: 100%; aspect-ratio: 4/3; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
 .chart-box iframe, .chart-box img { display: block; width: 100%; height: 100%; border: 0; object-fit: contain; background: #fff; }
 .chart-note { color: var(--muted); font-size: 0.85rem; margin: 8px 0 0; }
-.chart-toggle { margin: 10px 0 0; }
 .marklist { column-width: 150px; column-gap: 14px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 0.92rem; }
 .marklist li { break-inside: avoid; padding: 3px 0; }
 .course-search { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 9px 11px; margin: 0 0 8px; }
@@ -185,26 +184,27 @@ dialog#marks::backdrop { background: rgba(8, 20, 30, 0.6); }
 /* GO SAIL full-screen view: fixed dark, high-contrast, for reading on deck */
 dialog#sail { border: 0; padding: 0; width: 100%; height: 100%; max-width: 100%; max-height: 100%; margin: 0; background: #05131c; color: #fff; }
 dialog#sail::backdrop { background: #05131c; }
-.sail-in { min-height: 100%; padding: env(safe-area-inset-top, 16px) 16px calc(env(safe-area-inset-bottom, 16px) + 16px); box-sizing: border-box; }
+.sail-in { height: 100%; display: flex; flex-direction: column; padding: env(safe-area-inset-top, 14px) 16px calc(env(safe-area-inset-bottom, 12px) + 12px); box-sizing: border-box; }
 .sail-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-.sail-code { font-family: var(--display); font-weight: 700; font-size: clamp(2.4rem, 13vw, 4rem); line-height: 1; letter-spacing: -0.01em; }
-.sail-meta { color: #9fc3d6; font-size: 1.05rem; margin-top: 4px; }
+.sail-code { font-family: var(--display); font-weight: 700; font-size: clamp(1.3rem, 6vw, 1.8rem); line-height: 1; letter-spacing: -0.01em; }
+.sail-meta { color: #9fc3d6; font-size: 0.95rem; margin-top: 3px; }
+.sail-header-row { flex: none; }
 .sail-close { flex: none; background: #12283a; color: #fff; border: 1px solid #2c4a5c; border-radius: 6px; padding: 10px 16px; font: inherit; font-size: 1rem; }
-.sail-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 4px; }
-.sail-stat { background: #0d2130; border: 1px solid #1f3d4f; border-radius: 8px; padding: 10px 14px; }
+.sail-stats { flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 0; }
+.sail-stat { background: #0d2130; border: 1px solid #1f3d4f; border-radius: 8px; padding: 8px 12px; }
 .sail-stat span { display: block; color: #9fc3d6; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.06em; }
-.sail-stat b { display: block; font-family: var(--display); font-weight: 700; font-size: clamp(1.8rem, 8vw, 2.6rem); line-height: 1.15; }
+.sail-stat b { display: block; font-family: var(--display); font-weight: 700; font-size: clamp(1.5rem, 6.5vw, 2.1rem); line-height: 1.15; }
 .sail-stat b.sail-empty { font-size: 1.3rem; font-weight: 600; color: #9fc3d6; }
-.sail-list { list-style: none; margin: 22px 0 0; padding: 0; }
-.sail-list li { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #1f3d4f; }
+.sail-list { list-style: none; margin: 10px 0 0; padding: 0; flex: 1; min-height: 0; overflow-y: auto; font-size: 26px; }
+.sail-list li { display: flex; align-items: center; gap: 0.5em; padding: 0.4em 0; border-bottom: 1px solid #1f3d4f; }
 .sail-list li:first-child { padding-top: 0; }
-.sail-num { flex: none; width: 2.3ch; font-family: var(--display); font-weight: 700; font-size: clamp(1.4rem, 6vw, 1.9rem); color: #6f93a6; text-align: right; }
-.sail-side { flex: none; width: 2.4em; height: 2.4em; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 700; font-size: 1.3rem; color: #fff; }
+.sail-num { flex: none; width: 1.6em; font-family: var(--display); font-weight: 700; font-size: 0.75em; color: #6f93a6; text-align: right; }
+.sail-name { font-family: var(--display); font-weight: 700; font-size: 1em; line-height: 1.15; flex: 1; overflow-wrap: anywhere; }
+.sail-side { flex: none; width: 1.5em; height: 1.5em; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 700; font-size: 0.75em; color: #fff; }
 .sail-side.P { background: #c0332b; }
 .sail-side.S { background: #1e8a4c; }
 .sail-side.none { background: transparent; }
-.sail-name { font-family: var(--display); font-weight: 700; font-size: clamp(1.6rem, 7.5vw, 2.3rem); line-height: 1.15; flex: 1; }
-.sail-full { font-size: 0.85rem; font-weight: 700; color: #f2c14e; text-transform: uppercase; margin-top: 2px; display: block; }
+.sail-full { font-size: 0.42em; font-weight: 700; color: #f2c14e; text-transform: uppercase; margin-top: 0.15em; display: block; }
 
 .seasonbar { margin: -8px 0 14px; }
 .check { margin-top: 24px; padding: 12px 14px; border: 1px dashed var(--muted); border-radius: 6px; font-size: 0.9rem; }
@@ -357,7 +357,6 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
     <div class="marks-pane" id="pane-chart">
       <div class="chart-box" id="chartBox"></div>
       <p class="chart-note" id="chartNote"></p>
-      <p class="chart-toggle"><button class="pill" type="button" id="chartSwap"></button></p>
       <h3 style="font-family:var(--display);font-size:1rem;margin:20px 0 4px;">Marks</h3>
       <ul class="marklist" id="markList"></ul>
     </div>
@@ -372,7 +371,7 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
 
 <dialog id="sail" aria-labelledby="sail-code">
   <div class="sail-in">
-    <div class="sail-top">
+    <div class="sail-top sail-header-row">
       <div>
         <div class="sail-code" id="sail-code"></div>
         <div class="sail-meta" id="sail-meta"></div>
@@ -393,7 +392,7 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
    only needs a new programme.csv (same column headings).
 ------------------------------------------------------------------ */
 const CONFIG = {
-  version: "2.9.1", released: "2026-09-20",   // bump both here and in sw.js, and add a line to CHANGELOG.md
+  version: "2.11.0", released: "2026-09-23",   // bump both here and in sw.js, and add a line to CHANGELOG.md
   filePattern: "programme-{year}.csv",  // one file per season: programme-2026.csv, programme-2027.csv, ...
   yearsBack: 1, yearsAhead: 2,          // which years to look for around the current year
   legacyFile: "programme.csv",          // an older single file: used for its own year if no dated file covers it
@@ -404,8 +403,7 @@ const CONFIG = {
   weekly: ["Mirror sailing", "Beach Club"],   // recurring weekly sessions (can be hidden)
   bigTidePercentile: 0.9,
   coursesFile: "courses-2026.csv",
-  chartMapId: "1VmEGCQAz58bNzscckavTremktJjx304",   // Google My Maps "BSC Race Marks"; iframe needs the map set to "Anyone with the link"
-  chartImage: "chart-2026.jpg",                     // offline fallback, from the printed chart
+  chartImage: "chart-2026.jpg",     // large-print race marks chart
   chartImageDate: "March 2026"
 };
 
@@ -950,11 +948,40 @@ const MARK_ABBR = {
   "Muddy Cove": "Muddy Cove", "West Point": "West Pt", "Ford Creek": "Ford Ck", "Coopers Creek": "Coopers Ck",
   "Wilsons Point": "Wilsons Pt", "Club Line Gate": "CLG", "Osea Road": "Osea Rd", "New Hall": "New Hall"
 };
+const GATE_MARKS = new Set(["Club Line Gate", "Finish"]);   // sailed through, not rounded to a side
 function abbr(name) { return MARK_ABBR[name] || name; }
+function todaysDay() {
+  const t0 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+  return DAYS.find(d => d.date.getTime() === t0.getTime());
+}
+function windSpeedFor(day) {
+  if (!day || WX.status !== "ok") return null;
+  const st = dayStart(day);
+  let hour = 12;
+  if (st && /^\d\d:\d\d$/.test(st)) hour = parseInt(st.slice(0, 2), 10);
+  else { const t0 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()); if (day.date.getTime() === t0.getTime()) hour = new Date().getHours(); }
+  const rec = WX.byTime[day.iso + "T" + String(hour).padStart(2, "0") + ":00"];
+  return rec ? Math.round(rec.wind) : null;
+}
+function fitSailList() {
+  const list = $("sail-list");
+  if (!list.children.length) return;
+  const maxSize = 30, minSize = 12;
+  const n = list.children.length;
+  const availH = list.clientHeight || 1;
+  let size = Math.max(minSize, Math.min(maxSize, Math.floor(availH / n / 1.9)));
+  list.style.fontSize = size + "px";
+  let guard = 40;
+  while (list.scrollHeight > list.clientHeight + 1 && size > minSize && guard-- > 0) {
+    size -= 1;
+    list.style.fontSize = size + "px";
+  }
+}
 function openSail(course) {
   $("sail-code").textContent = course.code;
-  $("sail-meta").textContent = "Wind from " + windGridLabel(course.wind) + " · " + course.distance.toFixed(1) + " miles";
-  const today = DAYS.find(d => d.date.getTime() === (new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())).getTime());
+  const today = todaysDay();
+  const kn = windSpeedFor(today);
+  $("sail-meta").textContent = "Wind: " + windGridLabel(course.wind) + (kn !== null ? " · " + kn + " kn" : "");
   const st = today ? dayStart(today) : "";
   const startEl = $("sail-start"), hwEl = $("sail-hw");
   startEl.textContent = st || "No club racing today"; startEl.classList.toggle("sail-empty", !st);
@@ -964,18 +991,20 @@ function openSail(course) {
   course.marks.forEach((m, i) => {
     const li = document.createElement("li");
     li.appendChild(el("span", "sail-num", String(i + 1)));
-    const s = el("span", "sail-side " + (m.side || "none"), m.side || "");
-    li.appendChild(s);
     const nm = el("div", "");
     nm.appendChild(el("span", "sail-name", abbr(m.name)));
     if (m.round === "Full") nm.appendChild(el("span", "sail-full", "Round fully"));
     li.appendChild(nm);
+    const side = GATE_MARKS.has(m.name) ? "" : m.side;
+    li.appendChild(el("span", "sail-side " + (side || "none"), side || ""));
     ul.appendChild(li);
   });
   const dlg = $("sail");
   if (!dlg.open) dlg.showModal();
+  requestAnimationFrame(() => requestAnimationFrame(fitSailList));
   if (navigator.wakeLock) navigator.wakeLock.request("screen").then(l => { dlg._wakeLock = l; }).catch(() => {});
 }
+window.addEventListener("resize", () => { if ($("sail").open) fitSailList(); });
 $("sail-close").addEventListener("click", () => $("sail").close());
 $("sail").addEventListener("close", () => { if ($("sail")._wakeLock) { $("sail")._wakeLock.release().catch(() => {}); $("sail")._wakeLock = null; } });
 
@@ -1002,7 +1031,8 @@ function renderCourses() {
     c.marks.forEach(m => {
       const li = document.createElement("li");
       li.appendChild(el("span", "", m.name + (m.round === "Full" ? " (round fully)" : "")));
-      if (m.side) li.appendChild(el("span", "side " + m.side, m.side === "P" ? "Port" : "Starboard"));
+      const side = GATE_MARKS.has(m.name) ? "" : m.side;
+      if (side) li.appendChild(el("span", "side " + side, side === "P" ? "Port" : "Starboard"));
       ul.appendChild(li);
     });
     card.appendChild(ul);
@@ -1018,26 +1048,15 @@ function renderMarkList() {
   MARKS.forEach(m => ul.appendChild(el("li", "", m)));
 }
 
-let chartMode = null;   // "live" | "static"
-function setChartMode(mode) {
-  chartMode = mode;
+let chartLoaded = false;
+function renderChart() {
+  if (chartLoaded) return;
+  chartLoaded = true;
   const box = $("chartBox"); box.textContent = "";
-  if (mode === "live") {
-    const f = document.createElement("iframe");
-    f.src = "https://www.google.com/maps/d/embed?mid=" + CONFIG.chartMapId;
-    f.loading = "lazy"; f.title = "BSC race marks chart";
-    box.appendChild(f);
-    $("chartNote").textContent = "Live chart. Needs an internet connection.";
-    $("chartSwap").textContent = "Show the printed chart instead";
-    $("chartSwap").onclick = () => setChartMode("static");
-  } else {
-    const img = document.createElement("img");
-    img.src = CONFIG.chartImage; img.alt = "BSC race marks chart, printed " + CONFIG.chartImageDate;
-    box.appendChild(img);
-    $("chartNote").textContent = "Printed chart, " + CONFIG.chartImageDate + ". Works offline.";
-    $("chartSwap").textContent = "Show the live chart instead";
-    $("chartSwap").onclick = () => setChartMode("live");
-  }
+  const img = document.createElement("img");
+  img.src = CONFIG.chartImage; img.alt = "BSC race marks chart, printed " + CONFIG.chartImageDate;
+  box.appendChild(img);
+  $("chartNote").textContent = "Printed chart, " + CONFIG.chartImageDate + ". Works offline once loaded.";
 }
 function openMarksDialog(tab) {
   const dlg = $("marks");
@@ -1046,7 +1065,7 @@ function openMarksDialog(tab) {
   $("pane-courses").hidden = tab !== "courses";
   if (!dlg.open) dlg.showModal();
   document.body.classList.add("lock");
-  if (tab === "chart" && chartMode === null) setChartMode(navigator.onLine ? "live" : "static");
+  if (tab === "chart") renderChart();
   loadCourses().then(ok => {
     if (tab === "chart") { if (ok) renderMarkList(); return; }
     if (!ok) { $("courseList").textContent = ""; $("courseList").appendChild(el("p", "course-empty", "The course cards couldn't be loaded. They need an internet connection the first time.")); return; }

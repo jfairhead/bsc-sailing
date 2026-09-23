@@ -37,14 +37,12 @@ The forecast needs an internet connection either way. If you see an old icon or 
 
 Tap **Race Courses** or **Race Marks Map** near the top of the app — each opens its own screen.
 
-- **Chart:** shows the club's live "BSC Race Marks" Google My Map when there's a connection, with a printed chart (from March 2026) as a fallback when offline, or on request via the toggle button underneath. A plain list of mark names sits below it.
+- **Chart:** shows the club's large-print race marks chart (March 2026). A plain list of mark names sits below it.
 - **Course cards:** all the club's printed courses, one card per wind direction and length. Filter by wind direction, or search by course code (for example `A3`) or a mark name. Each card expands to show its marks in sailing order, with Port or Starboard rounding.
 
 To update either for a new season:
-- **Chart:** edit the club's Google My Map directly (it updates live, nothing to redeploy), and replace `chart-2026.jpg` with a new export of the printed chart if that changes. If the map's own link (`mid=...`) changes, update `CONFIG.chartMapId` in `index.html`.
+- **Chart:** replace `chart-2026.jpg` with a new export of the printed chart when it changes.
 - **Course cards:** replace `courses-2026.csv` with the new season's data, keeping the same column headings (`Code, Family, Wind sector, Distance (miles), Order, Mark, Side, Rounding`), and update `CONFIG.coursesFile` if you rename it.
-
-The Google My Map needs its sharing set to "Anyone with the link" or the embed shows a sign-in prompt instead of the map.
 
 ## Adding a new season (2027 and beyond)
 
@@ -99,7 +97,7 @@ To release a new version: change `CONFIG.version` and `CONFIG.released` in `inde
 | `CHANGELOG.md` | What changed in each version. |
 | `icon-192.png`, `icon-512.png`, `apple-touch-icon.png` | The app icon (the club roundel on white). |
 | `logo.png` | The club roundel shown next to the title. If it is missing the page just leaves it out. |
-| `chart-2026.jpg` | The printed race-marks chart, used offline or when the live map isn't wanted. |
+| `chart-2026.jpg` | The printed race-marks chart (large-print version). |
 | `courses-2026.csv` | The course cards: one row per mark, grouped into courses. |
 
 Weather data is from [Open-Meteo.com](https://open-meteo.com/).

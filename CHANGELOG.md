@@ -2,6 +2,14 @@
 
 Version numbers are in `CONFIG.version` in `index.html` and `VERSION` in `sw.js`. Keep the two the same, and add a line here for every release. The version is shown at the bottom of the app, with more detail under **Support info**.
 
+## 2.11.0 – 23 Sep 2026
+- Replaced the race marks chart with the club's large-print version (clearer buoy icons and labels); the chart is now this printed image only — the live Google My Map and the toggle between them are removed.
+
+## 2.10.0 – 20 Sep 2026
+- GO SAIL: the P/S circle now sits on the right of the mark name; Club Line Gate and Finish never show a rounding side, since you sail through them rather than round them (the ordinary Race Courses list carries the same fix).
+- The whole course now fits the screen with no scrolling — text size adjusts automatically to the number of marks and the screen's height, checked down to a 16-mark course on a small phone.
+- Smaller course-code heading; the wind line is now "Wind: N–NNE · 11 kn", pulling today's live forecast wind speed for the course's start time (or the current hour if racing hasn't started); distance is dropped from this screen to save space.
+
 ## 2.9.1 – 20 Sep 2026
 - GO SAIL: a day with no club racing now says "No club racing today" instead of a bare dash (BJRC racing, training-only, or weekly-session days still show the tide if there is one); a day with no data at all says "No tide data today" too, rather than leaving either box looking blank.
 
