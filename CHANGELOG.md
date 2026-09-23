@@ -2,6 +2,12 @@
 
 Version numbers are in `CONFIG.version` in `index.html` and `VERSION` in `sw.js`. Keep the two the same, and add a line here for every release. The version is shown at the bottom of the app, with more detail under **Support info**.
 
+## 2.9.1 – 20 Sep 2026
+- GO SAIL: a day with no club racing now says "No club racing today" instead of a bare dash (BJRC racing, training-only, or weekly-session days still show the tide if there is one); a day with no data at all says "No tide data today" too, rather than leaving either box looking blank.
+
+## 2.9.0 – 20 Sep 2026
+- **GO SAIL**: a button on each course card opens a big, high-contrast, always-dark full-screen view for reading at the helm — course code, wind sector, distance, today's start time and high water, and the marks in order with a large P (red) or S (green) circle and abbreviated names (Ballast H, Northey P., CLG). Keeps the screen awake where the browser supports it.
+
 ## 2.8.0 – 20 Sep 2026
 - Course cards now sort in logical order (A1-A6, AZ1-AZ6, B1-B6, ...) instead of alphabetically by wind sector; the wind-direction dropdown follows the same order.
 - **Race Courses** and **Race Marks Map** are now two separate screens with no shared tab bar, each opening straight to its own content with the matching title.

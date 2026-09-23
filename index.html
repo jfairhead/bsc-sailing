@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BSC Sailing Calendar app, version 2.8.0 (2026-09-20) -->
+<!-- BSC Sailing Calendar app, version 2.9.1 (2026-09-20) -->
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
@@ -178,6 +178,33 @@ dialog#marks::backdrop { background: rgba(8, 20, 30, 0.6); }
 .side.P { background: var(--water-soft); color: var(--ink); }
 .side.S { background: var(--buoy-soft); color: var(--buoy); }
 .course-empty { color: var(--muted); padding: 20px 4px; }
+.go-sail-wrap { margin: 12px 0 2px; }
+.go-sail-btn { width: 100%; padding: 12px; font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.03em; background: var(--gold); color: #1a1200; border: 0; border-radius: 6px; cursor: pointer; }
+.go-sail-btn:active { filter: brightness(0.92); }
+
+/* GO SAIL full-screen view: fixed dark, high-contrast, for reading on deck */
+dialog#sail { border: 0; padding: 0; width: 100%; height: 100%; max-width: 100%; max-height: 100%; margin: 0; background: #05131c; color: #fff; }
+dialog#sail::backdrop { background: #05131c; }
+.sail-in { min-height: 100%; padding: env(safe-area-inset-top, 16px) 16px calc(env(safe-area-inset-bottom, 16px) + 16px); box-sizing: border-box; }
+.sail-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.sail-code { font-family: var(--display); font-weight: 700; font-size: clamp(2.4rem, 13vw, 4rem); line-height: 1; letter-spacing: -0.01em; }
+.sail-meta { color: #9fc3d6; font-size: 1.05rem; margin-top: 4px; }
+.sail-close { flex: none; background: #12283a; color: #fff; border: 1px solid #2c4a5c; border-radius: 6px; padding: 10px 16px; font: inherit; font-size: 1rem; }
+.sail-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 4px; }
+.sail-stat { background: #0d2130; border: 1px solid #1f3d4f; border-radius: 8px; padding: 10px 14px; }
+.sail-stat span { display: block; color: #9fc3d6; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.sail-stat b { display: block; font-family: var(--display); font-weight: 700; font-size: clamp(1.8rem, 8vw, 2.6rem); line-height: 1.15; }
+.sail-stat b.sail-empty { font-size: 1.3rem; font-weight: 600; color: #9fc3d6; }
+.sail-list { list-style: none; margin: 22px 0 0; padding: 0; }
+.sail-list li { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #1f3d4f; }
+.sail-list li:first-child { padding-top: 0; }
+.sail-num { flex: none; width: 2.3ch; font-family: var(--display); font-weight: 700; font-size: clamp(1.4rem, 6vw, 1.9rem); color: #6f93a6; text-align: right; }
+.sail-side { flex: none; width: 2.4em; height: 2.4em; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-weight: 700; font-size: 1.3rem; color: #fff; }
+.sail-side.P { background: #c0332b; }
+.sail-side.S { background: #1e8a4c; }
+.sail-side.none { background: transparent; }
+.sail-name { font-family: var(--display); font-weight: 700; font-size: clamp(1.6rem, 7.5vw, 2.3rem); line-height: 1.15; flex: 1; }
+.sail-full { font-size: 0.85rem; font-weight: 700; color: #f2c14e; text-transform: uppercase; margin-top: 2px; display: block; }
 
 .seasonbar { margin: -8px 0 14px; }
 .check { margin-top: 24px; padding: 12px 14px; border: 1px dashed var(--muted); border-radius: 6px; font-size: 0.9rem; }
@@ -343,13 +370,30 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
   </div>
 </dialog>
 
+<dialog id="sail" aria-labelledby="sail-code">
+  <div class="sail-in">
+    <div class="sail-top">
+      <div>
+        <div class="sail-code" id="sail-code"></div>
+        <div class="sail-meta" id="sail-meta"></div>
+      </div>
+      <button class="sail-close" type="button" id="sail-close">Close</button>
+    </div>
+    <div class="sail-stats">
+      <div class="sail-stat"><span>Start</span><b id="sail-start"></b></div>
+      <div class="sail-stat"><span>High water</span><b id="sail-hw"></b></div>
+    </div>
+    <ul class="sail-list" id="sail-list"></ul>
+  </div>
+</dialog>
+
 <script>
 /* ------------------------------------------------------------------
    Settings. Everything else comes from programme.csv, so a new season
    only needs a new programme.csv (same column headings).
 ------------------------------------------------------------------ */
 const CONFIG = {
-  version: "2.8.0", released: "2026-09-20",   // bump both here and in sw.js, and add a line to CHANGELOG.md
+  version: "2.9.1", released: "2026-09-20",   // bump both here and in sw.js, and add a line to CHANGELOG.md
   filePattern: "programme-{year}.csv",  // one file per season: programme-2026.csv, programme-2027.csv, ...
   yearsBack: 1, yearsAhead: 2,          // which years to look for around the current year
   legacyFile: "programme.csv",          // an older single file: used for its own year if no dated file covers it
@@ -901,6 +945,40 @@ function buildWindGrid() {
   sel.value = marksState.wind;
 }
 const marksState = { wind: "all" };
+const MARK_ABBR = {
+  "Ballast Hole": "Ballast H", "Millbeach": "Millbeach", "Northey Point": "Northey P.", "Sandy Bight": "Sandy B.",
+  "Muddy Cove": "Muddy Cove", "West Point": "West Pt", "Ford Creek": "Ford Ck", "Coopers Creek": "Coopers Ck",
+  "Wilsons Point": "Wilsons Pt", "Club Line Gate": "CLG", "Osea Road": "Osea Rd", "New Hall": "New Hall"
+};
+function abbr(name) { return MARK_ABBR[name] || name; }
+function openSail(course) {
+  $("sail-code").textContent = course.code;
+  $("sail-meta").textContent = "Wind from " + windGridLabel(course.wind) + " · " + course.distance.toFixed(1) + " miles";
+  const today = DAYS.find(d => d.date.getTime() === (new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())).getTime());
+  const st = today ? dayStart(today) : "";
+  const startEl = $("sail-start"), hwEl = $("sail-hw");
+  startEl.textContent = st || "No club racing today"; startEl.classList.toggle("sail-empty", !st);
+  const hwText = today && today.hw ? (today.est ? "≈" : "") + today.hw : "No tide data today";
+  hwEl.textContent = hwText; hwEl.classList.toggle("sail-empty", !(today && today.hw));
+  const ul = $("sail-list"); ul.textContent = "";
+  course.marks.forEach((m, i) => {
+    const li = document.createElement("li");
+    li.appendChild(el("span", "sail-num", String(i + 1)));
+    const s = el("span", "sail-side " + (m.side || "none"), m.side || "");
+    li.appendChild(s);
+    const nm = el("div", "");
+    nm.appendChild(el("span", "sail-name", abbr(m.name)));
+    if (m.round === "Full") nm.appendChild(el("span", "sail-full", "Round fully"));
+    li.appendChild(nm);
+    ul.appendChild(li);
+  });
+  const dlg = $("sail");
+  if (!dlg.open) dlg.showModal();
+  if (navigator.wakeLock) navigator.wakeLock.request("screen").then(l => { dlg._wakeLock = l; }).catch(() => {});
+}
+$("sail-close").addEventListener("click", () => $("sail").close());
+$("sail").addEventListener("close", () => { if ($("sail")._wakeLock) { $("sail")._wakeLock.release().catch(() => {}); $("sail")._wakeLock = null; } });
+
 function renderCourses() {
   const q = $("courseSearch").value.trim().toLowerCase();
   const list = COURSES.filter(c => {
@@ -927,7 +1005,12 @@ function renderCourses() {
       if (m.side) li.appendChild(el("span", "side " + m.side, m.side === "P" ? "Port" : "Starboard"));
       ul.appendChild(li);
     });
-    card.appendChild(ul); box.appendChild(card);
+    card.appendChild(ul);
+    const goWrap = el("p", "go-sail-wrap");
+    const goBtn = el("button", "go-sail-btn", "GO SAIL");
+    goBtn.type = "button"; goBtn.addEventListener("click", e => { e.preventDefault(); openSail(c); });
+    goWrap.appendChild(goBtn); card.appendChild(goWrap);
+    box.appendChild(card);
   });
 }
 function renderMarkList() {
