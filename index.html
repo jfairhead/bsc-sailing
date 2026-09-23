@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BSC Sailing Calendar app, version 2.11.0 (2026-09-23) -->
+<!-- BSC Sailing Calendar app, version 2.12.0 (2026-09-23) -->
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
@@ -30,6 +30,8 @@
   --buoy-soft: #F6DDD5;
   --gold: #8A5A00;
   --gold-soft: #F8E6B8;
+  --stbd: #1B6B3C;
+  --stbd-soft: #D3EEDC;
   --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
@@ -37,13 +39,13 @@
   :root:not([data-theme="light"]) {
     --bg: #0B1A24; --surface: #12283A; --ink: #E6EEF2; --muted: #97ADBB; --line: #26424F;
     --water: #72B9D6; --water-soft: #2E6C88; --buoy: #FF8A66; --buoy-soft: #3A2620;
-    --gold: #F2C14E; --gold-soft: #3B3010;
+    --gold: #F2C14E; --gold-soft: #3B3010; --stbd: #4FCE86; --stbd-soft: #16331F;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0B1A24; --surface: #12283A; --ink: #E6EEF2; --muted: #97ADBB; --line: #26424F;
   --water: #72B9D6; --water-soft: #2E6C88; --buoy: #FF8A66; --buoy-soft: #3A2620;
-  --gold: #F2C14E; --gold-soft: #3B3010;
+  --gold: #F2C14E; --gold-soft: #3B3010; --stbd: #4FCE86; --stbd-soft: #16331F;
 }
 
 * { box-sizing: border-box; }
@@ -157,8 +159,13 @@ dialog#marks::backdrop { background: rgba(8, 20, 30, 0.6); }
 .marks-tabs .pill { flex: 1; }
 .marks-pane { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 14px; }
 .marks-pane[hidden] { display: none; }
-.chart-box { position: relative; width: 100%; aspect-ratio: 4/3; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-.chart-box iframe, .chart-box img { display: block; width: 100%; height: 100%; border: 0; object-fit: contain; background: #fff; }
+.chart-box { position: relative; width: 100%; aspect-ratio: 4/3; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; padding: 0; cursor: zoom-in; }
+.chart-box img { display: block; width: 100%; height: 100%; border: 0; object-fit: contain; background: #fff; }
+dialog#chartFull { border: 0; padding: 0; width: 100%; height: 100%; max-width: 100%; max-height: 100%; margin: 0; background: #000; }
+dialog#chartFull::backdrop { background: #000; }
+.chart-full-close { position: fixed; top: env(safe-area-inset-top, 12px); right: 12px; z-index: 2; background: #12283a; color: #fff; border: 1px solid #2c4a5c; border-radius: 6px; padding: 8px 14px; font: inherit; }
+.chart-full-scroll { width: 100%; height: 100%; overflow: auto; touch-action: pinch-zoom pan-x pan-y; display: grid; place-items: center; }
+.chart-full-scroll img { display: block; width: 100%; height: auto; }
 .chart-note { color: var(--muted); font-size: 0.85rem; margin: 8px 0 0; }
 .marklist { column-width: 150px; column-gap: 14px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 0.92rem; }
 .marklist li { break-inside: avoid; padding: 3px 0; }
@@ -174,9 +181,12 @@ dialog#marks::backdrop { background: rgba(8, 20, 30, 0.6); }
 .course-marks li { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-bottom: 1px dashed var(--line); }
 .course-marks li:last-child { border-bottom: 0; }
 .side { flex: none; font-size: 0.78rem; font-weight: 700; padding: 1px 7px; border-radius: 3px; }
-.side.P { background: var(--water-soft); color: var(--ink); }
-.side.S { background: var(--buoy-soft); color: var(--buoy); }
+.side.P { background: var(--buoy-soft); color: var(--buoy); }
+.side.S { background: var(--stbd-soft); color: var(--stbd); }
 .course-empty { color: var(--muted); padding: 20px 4px; }
+.course-context { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; background: var(--gold-soft); border: 1px solid var(--gold); border-radius: 6px; padding: 10px 12px; margin: 0 0 12px; font-size: 0.92rem; }
+.course-context[hidden] { display: none; }
+.course-context .pill { padding: 3px 11px; font-size: 0.85rem; }
 .go-sail-wrap { margin: 12px 0 2px; }
 .go-sail-btn { width: 100%; padding: 12px; font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: 0.03em; background: var(--gold); color: #1a1200; border: 0; border-radius: 6px; cursor: pointer; }
 .go-sail-btn:active { filter: brightness(0.92); }
@@ -188,13 +198,11 @@ dialog#sail::backdrop { background: #05131c; }
 .sail-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .sail-code { font-family: var(--display); font-weight: 700; font-size: clamp(1.3rem, 6vw, 1.8rem); line-height: 1; letter-spacing: -0.01em; }
 .sail-meta { color: #9fc3d6; font-size: 0.95rem; margin-top: 3px; }
+.sail-quick { color: #d8e8ef; font-size: 0.95rem; font-weight: 700; margin-top: 4px; }
+.sail-quick b { color: #fff; }
 .sail-header-row { flex: none; }
 .sail-close { flex: none; background: #12283a; color: #fff; border: 1px solid #2c4a5c; border-radius: 6px; padding: 10px 16px; font: inherit; font-size: 1rem; }
-.sail-stats { flex: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0 0; }
-.sail-stat { background: #0d2130; border: 1px solid #1f3d4f; border-radius: 8px; padding: 8px 12px; }
-.sail-stat span { display: block; color: #9fc3d6; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.06em; }
-.sail-stat b { display: block; font-family: var(--display); font-weight: 700; font-size: clamp(1.5rem, 6.5vw, 2.1rem); line-height: 1.15; }
-.sail-stat b.sail-empty { font-size: 1.3rem; font-weight: 600; color: #9fc3d6; }
+
 .sail-list { list-style: none; margin: 10px 0 0; padding: 0; flex: 1; min-height: 0; overflow-y: auto; font-size: 26px; }
 .sail-list li { display: flex; align-items: center; gap: 0.5em; padding: 0.4em 0; border-bottom: 1px solid #1f3d4f; }
 .sail-list li:first-child { padding-top: 0; }
@@ -254,9 +262,9 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
 .scale { height: 10px; background: var(--line); border-radius: 3px; overflow: hidden; margin: 10px 0 4px; }
 .scale i { display: block; height: 100%; background: var(--water); }
 .scale-labels { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.82rem; margin-bottom: 8px; }
-.sheet-cal { margin-top: 22px; }
-.sheet-cal .pill { width: 100%; padding: 9px 10px; }
-.sheet-cal[hidden] { display: none; }
+.sheet-actions { display: flex; gap: 8px; margin-top: 22px; }
+.sheet-actions .pill { flex: 1; padding: 9px 10px; }
+.sheet-actions .pill[hidden] { display: none; }
 .sheet-nav { display: flex; gap: 8px; margin-top: 10px; }
 .sheet-nav .pill { flex: 1; padding: 9px 10px; }
 
@@ -340,7 +348,8 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
       <button class="pill" type="button" id="sheet-close">Close</button>
     </div>
     <div id="sheet-body"></div>
-    <div class="sheet-cal"><button class="pill" type="button" id="sheet-cal">Add to calendar</button><p class="hint" id="sheet-calnote" role="status"></p></div>
+    <div class="sheet-actions"><button class="pill" type="button" id="sheet-cal">Add to calendar</button><button class="pill" type="button" id="sheet-gosail">GO SAIL</button></div>
+    <p class="hint" id="sheet-calnote" role="status"></p>
     <div class="sheet-nav">
       <button class="pill" type="button" id="sheet-prev"></button>
       <button class="pill" type="button" id="sheet-next"></button>
@@ -355,12 +364,13 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
       <button class="pill" type="button" id="marks-close">Close</button>
     </div>
     <div class="marks-pane" id="pane-chart">
-      <div class="chart-box" id="chartBox"></div>
+      <button class="chart-box" type="button" id="chartBox" aria-label="Open the chart full size to zoom in"></button>
       <p class="chart-note" id="chartNote"></p>
       <h3 style="font-family:var(--display);font-size:1rem;margin:20px 0 4px;">Marks</h3>
       <ul class="marklist" id="markList"></ul>
     </div>
     <div class="marks-pane" id="pane-courses" hidden>
+      <div class="course-context" id="courseContext" hidden></div>
       <input class="course-search" id="courseSearch" type="search" placeholder="Search by course code or mark name" autocomplete="off">
       <div class="wind-select-wrap"><label class="sr" for="windGrid">Wind direction</label><select id="windGrid"></select></div>
       <p class="hint" id="courseCount"></p>
@@ -369,18 +379,20 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
   </div>
 </dialog>
 
+<dialog id="chartFull" aria-label="Race marks chart, full size">
+  <button class="chart-full-close" type="button" id="chartFull-close">Close</button>
+  <div class="chart-full-scroll" id="chartFull-scroll"></div>
+</dialog>
+
 <dialog id="sail" aria-labelledby="sail-code">
   <div class="sail-in">
     <div class="sail-top sail-header-row">
       <div>
         <div class="sail-code" id="sail-code"></div>
         <div class="sail-meta" id="sail-meta"></div>
+        <div class="sail-quick" id="sail-quick"></div>
       </div>
       <button class="sail-close" type="button" id="sail-close">Close</button>
-    </div>
-    <div class="sail-stats">
-      <div class="sail-stat"><span>Start</span><b id="sail-start"></b></div>
-      <div class="sail-stat"><span>High water</span><b id="sail-hw"></b></div>
     </div>
     <ul class="sail-list" id="sail-list"></ul>
   </div>
@@ -392,7 +404,7 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
    only needs a new programme.csv (same column headings).
 ------------------------------------------------------------------ */
 const CONFIG = {
-  version: "2.11.0", released: "2026-09-23",   // bump both here and in sw.js, and add a line to CHANGELOG.md
+  version: "2.12.0", released: "2026-09-23",   // bump both here and in sw.js, and add a line to CHANGELOG.md
   filePattern: "programme-{year}.csv",  // one file per season: programme-2026.csv, programme-2027.csv, ...
   yearsBack: 1, yearsAhead: 2,          // which years to look for around the current year
   legacyFile: "programme.csv",          // an older single file: used for its own year if no dated file covers it
@@ -977,16 +989,17 @@ function fitSailList() {
     list.style.fontSize = size + "px";
   }
 }
-function openSail(course) {
+function openSail(course, forDay) {
   $("sail-code").textContent = course.code;
-  const today = todaysDay();
+  const today = forDay || todaysDay();
   const kn = windSpeedFor(today);
   $("sail-meta").textContent = "Wind: " + windGridLabel(course.wind) + (kn !== null ? " · " + kn + " kn" : "");
   const st = today ? dayStart(today) : "";
-  const startEl = $("sail-start"), hwEl = $("sail-hw");
-  startEl.textContent = st || "No club racing today"; startEl.classList.toggle("sail-empty", !st);
-  const hwText = today && today.hw ? (today.est ? "≈" : "") + today.hw : "No tide data today";
-  hwEl.textContent = hwText; hwEl.classList.toggle("sail-empty", !(today && today.hw));
+  const hwText = today && today.hw ? (today.est ? "≈" : "") + today.hw : "";
+  const quick = $("sail-quick"); quick.textContent = "";
+  quick.appendChild(el("span", "", "START: ")); quick.appendChild(el("b", "", st || "n/a"));
+  quick.appendChild(el("span", "", "   HW: ")); quick.appendChild(el("b", "", hwText || "n/a"));
+  if (forDay && !isToday(forDay)) quick.appendChild(el("span", "", "   (" + fmtShort.format(forDay.date) + ")"));
   const ul = $("sail-list"); ul.textContent = "";
   course.marks.forEach((m, i) => {
     const li = document.createElement("li");
@@ -1006,7 +1019,10 @@ function openSail(course) {
 }
 window.addEventListener("resize", () => { if ($("sail").open) fitSailList(); });
 $("sail-close").addEventListener("click", () => $("sail").close());
-$("sail").addEventListener("close", () => { if ($("sail")._wakeLock) { $("sail")._wakeLock.release().catch(() => {}); $("sail")._wakeLock = null; } });
+$("sail").addEventListener("close", () => {
+  if ($("sail")._wakeLock) { $("sail")._wakeLock.release().catch(() => {}); $("sail")._wakeLock = null; }
+  if (sailContextDay) { sailContextDay = null; renderCourseContext(); }
+});
 
 function renderCourses() {
   const q = $("courseSearch").value.trim().toLowerCase();
@@ -1038,7 +1054,7 @@ function renderCourses() {
     card.appendChild(ul);
     const goWrap = el("p", "go-sail-wrap");
     const goBtn = el("button", "go-sail-btn", "GO SAIL");
-    goBtn.type = "button"; goBtn.addEventListener("click", e => { e.preventDefault(); openSail(c); });
+    goBtn.type = "button"; goBtn.addEventListener("click", e => { e.preventDefault(); openSail(c, sailContextDay); });
     goWrap.appendChild(goBtn); card.appendChild(goWrap);
     box.appendChild(card);
   });
@@ -1056,8 +1072,19 @@ function renderChart() {
   const img = document.createElement("img");
   img.src = CONFIG.chartImage; img.alt = "BSC race marks chart, printed " + CONFIG.chartImageDate;
   box.appendChild(img);
-  $("chartNote").textContent = "Printed chart, " + CONFIG.chartImageDate + ". Works offline once loaded.";
+  $("chartNote").textContent = "Printed chart, " + CONFIG.chartImageDate + ". Works offline once loaded. Tap the chart to view it full size and zoom in.";
 }
+function openChartFull() {
+  const scroll = $("chartFull-scroll"); scroll.textContent = "";
+  const img = document.createElement("img");
+  img.src = CONFIG.chartImage; img.alt = "BSC race marks chart, printed " + CONFIG.chartImageDate;
+  scroll.appendChild(img);
+  const dlg = $("chartFull");
+  if (!dlg.open) dlg.showModal();
+  scroll.scrollTop = 0; scroll.scrollLeft = 0;
+}
+$("chartBox").addEventListener("click", openChartFull);
+$("chartFull-close").addEventListener("click", () => $("chartFull").close());
 function openMarksDialog(tab) {
   const dlg = $("marks");
   $("marks-title").textContent = tab === "courses" ? "Race Courses" : "Race Marks Map";
@@ -1066,14 +1093,28 @@ function openMarksDialog(tab) {
   if (!dlg.open) dlg.showModal();
   document.body.classList.add("lock");
   if (tab === "chart") renderChart();
+  if (tab === "courses") renderCourseContext();
   loadCourses().then(ok => {
     if (tab === "chart") { if (ok) renderMarkList(); return; }
     if (!ok) { $("courseList").textContent = ""; $("courseList").appendChild(el("p", "course-empty", "The course cards couldn't be loaded. They need an internet connection the first time.")); return; }
     buildWindGrid(); renderMarkList(); renderCourses();
   });
 }
+let sailContextDay = null;
+function renderCourseContext() {
+  const box = $("courseContext");
+  if (!sailContextDay) { box.hidden = true; return; }
+  box.hidden = false; box.textContent = "";
+  box.appendChild(el("span", "", "Choosing a course for " + fmtLong.format(sailContextDay.date) + " — tap GO SAIL on a course below."));
+  box.appendChild(pillBtn("Cancel", () => { sailContextDay = null; renderCourseContext(); }));
+}
 $("openChart").addEventListener("click", () => openMarksDialog("chart"));
-$("openCourses").addEventListener("click", () => openMarksDialog("courses"));
+$("openCourses").addEventListener("click", () => { sailContextDay = null; openMarksDialog("courses"); });
+$("sheet-gosail").addEventListener("click", () => {
+  sailContextDay = nav[navIdx];
+  sheet.close();
+  openMarksDialog("courses");
+});
 $("marks-close").addEventListener("click", () => $("marks").close());
 $("marks").addEventListener("click", e => { if (e.target === $("marks")) $("marks").close(); });
 $("marks").addEventListener("close", () => document.body.classList.remove("lock"));
@@ -1158,7 +1199,7 @@ function fillSheet() {
   const prev = $("sheet-prev"), next = $("sheet-next"), p = nav[navIdx - 1], nx = nav[navIdx + 1];
   const calBtn = $("sheet-cal"); $("sheet-calnote").textContent = "";
   const hasCal = dayCalendarEvents(day).length > 0;
-  calBtn.parentElement.hidden = !hasCal;
+  calBtn.hidden = !hasCal;
   calBtn.textContent = state.fleets.length ? "Add to calendar (my fleets)" : "Add this day to calendar";
   prev.disabled = !p; next.disabled = !nx;
   prev.textContent = p ? "Earlier: " + fmtShort.format(p.date) : "No earlier day";

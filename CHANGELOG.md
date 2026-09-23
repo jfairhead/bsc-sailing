@@ -2,6 +2,13 @@
 
 Version numbers are in `CONFIG.version` in `index.html` and `VERSION` in `sw.js`. Keep the two the same, and add a line here for every release. The version is shown at the bottom of the app, with more detail under **Support info**.
 
+## 2.12.0 – 23 Sep 2026
+- GO SAIL: Start and High water are now a single compact "START: 11:30   HW: 13:19" line under the wind, instead of two large boxes — this frees more height for the marks, which now scale slightly larger on long courses.
+- Race Courses list: Port is now red and Starboard green (matching GO SAIL and real buoyage), replacing the earlier blue/orange.
+- The race marks chart can be tapped to open full size in its own screen for pinch-zooming.
+- The day-detail sheet now has a **GO SAIL** button alongside Add to calendar. It asks you to pick a course from Race Courses, then opens GO SAIL showing that day's Start and High water (with the date shown if it isn't today).
+- Fixed: an empty gold banner briefly showed at the top of Race Courses even outside the course-picking flow.
+
 ## 2.11.0 – 23 Sep 2026
 - Replaced the race marks chart with the club's large-print version (clearer buoy icons and labels); the chart is now this printed image only — the live Google My Map and the toggle between them are removed.
 
