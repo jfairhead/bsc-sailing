@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BSC Sailing Calendar app, version 2.5.1 (2026-09-20) -->
+<!-- BSC Sailing Calendar app, version 2.8.0 (2026-09-20) -->
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
@@ -53,7 +53,8 @@ body.lock { overflow: hidden; }
 .sr { position: absolute; left: -9999px; }
 .wrap { max-width: 720px; margin: 0 auto; padding: 20px 14px 56px; }
 .brand { display: flex; align-items: center; gap: 12px; margin: 4px 0 6px; }
-.logo { flex: none; width: 56px; height: 56px; }
+.logo { flex: none; width: 56px; height: 56px; display: block; }
+.brand a { line-height: 0; }
 h1 { font-family: var(--display); font-weight: 700; font-size: clamp(1.7rem, 7vw, 2.4rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0; }
 .sub { margin: 0 0 18px; color: var(--muted); max-width: 46ch; }
 p { margin: 0; }
@@ -82,7 +83,8 @@ p { margin: 0; }
 .badge.gp { background: var(--gold-soft); color: var(--gold); border: 1px solid var(--gold); }
 
 /* next on */
-.next { background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--buoy); border-radius: 4px; padding: 14px 16px 16px; margin-bottom: 18px; }
+.next { background: var(--surface); border: 1px solid var(--line); border-left: 6px solid var(--buoy); border-radius: 4px; padding: 14px 16px 16px; margin-bottom: 18px; touch-action: pan-y; cursor: grab; user-select: none; }
+.next-hint { color: var(--muted); font-size: 0.82rem; margin: 10px 0 0; }
 .next .when { color: var(--buoy); font-weight: 700; }
 .next .date-big { font-family: var(--display); font-weight: 700; font-size: clamp(1.5rem, 6.4vw, 2.1rem); line-height: 1.1; letter-spacing: -0.015em; margin: 2px 0 6px; }
 .next .tokens { margin: 4px 0 12px; }
@@ -145,6 +147,38 @@ button.day-btn:focus-visible { outline-offset: -3px; }
 .gauge { display: block; height: 7px; margin: 5px 0 3px auto; width: 100%; background: var(--line); border-radius: 2px; overflow: hidden; }
 .gauge i { display: block; height: 100%; background: var(--water); }
 .empty { padding: 32px 8px; text-align: center; color: var(--muted); }
+.chartlink { margin: 0 0 14px; }
+dialog#marks { border: 0; padding: 0; background: var(--surface); color: var(--ink); width: min(100%, 640px); max-width: 100%; height: 100%; max-height: 100%; margin: 0 auto; border-radius: 0; }
+@media (min-width: 700px) { dialog#marks { height: 85vh; max-height: 720px; margin: auto; border-radius: 10px; } }
+dialog#marks::backdrop { background: rgba(8, 20, 30, 0.6); }
+.marks-in { display: flex; flex-direction: column; height: 100%; padding: 14px 14px 0; }
+.marks-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex: none; }
+.marks-top h2 { font-family: var(--display); font-size: 1.3rem; margin: 0; }
+.marks-tabs .pill { flex: 1; }
+.marks-pane { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 14px; }
+.marks-pane[hidden] { display: none; }
+.chart-box { position: relative; width: 100%; aspect-ratio: 4/3; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.chart-box iframe, .chart-box img { display: block; width: 100%; height: 100%; border: 0; object-fit: contain; background: #fff; }
+.chart-note { color: var(--muted); font-size: 0.85rem; margin: 8px 0 0; }
+.chart-toggle { margin: 10px 0 0; }
+.marklist { column-width: 150px; column-gap: 14px; margin: 14px 0 0; padding: 0; list-style: none; font-size: 0.92rem; }
+.marklist li { break-inside: avoid; padding: 3px 0; }
+.course-search { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 9px 11px; margin: 0 0 8px; }
+.wind-select-wrap { margin: 0 0 10px; }
+.wind-select-wrap select { width: 100%; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 9px 11px; }
+.course-card { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; margin: 0 0 10px; background: var(--bg); }
+.course-card summary { cursor: pointer; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; list-style: none; }
+.course-card summary::-webkit-details-marker { display: none; }
+.course-code { font-family: var(--display); font-weight: 700; font-size: 1.15rem; }
+.course-meta { color: var(--muted); font-size: 0.85rem; }
+.course-marks { list-style: none; margin: 10px 0 0; padding: 0; border-top: 1px solid var(--line); }
+.course-marks li { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-bottom: 1px dashed var(--line); }
+.course-marks li:last-child { border-bottom: 0; }
+.side { flex: none; font-size: 0.78rem; font-weight: 700; padding: 1px 7px; border-radius: 3px; }
+.side.P { background: var(--water-soft); color: var(--ink); }
+.side.S { background: var(--buoy-soft); color: var(--buoy); }
+.course-empty { color: var(--muted); padding: 20px 4px; }
+
 .seasonbar { margin: -8px 0 14px; }
 .check { margin-top: 24px; padding: 12px 14px; border: 1px dashed var(--muted); border-radius: 6px; font-size: 0.9rem; }
 .check h2 { font-family: var(--display); font-size: 1rem; margin: 0 0 6px; }
@@ -228,8 +262,9 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
 </head>
 <body>
 <div class="wrap">
-  <div class="brand"><img class="logo" src="logo.png" alt="Blackwater Sailing Club" width="56" height="56" onerror="this.hidden=true"><h1 id="title">BSC Sailing Calendar</h1></div>
+  <div class="brand"><a href="https://blackwatersailingclub.org.uk/" target="_blank" rel="noopener"><img class="logo" src="logo.png" alt="Blackwater Sailing Club" width="56" height="56" onerror="this.hidden=true"></a><h1 id="title">BSC Sailing Calendar</h1></div>
   <p class="sub" id="sub">Races, events, training and tides for every day of the season.</p>
+  <p class="chartlink"><button class="pill" type="button" id="openCourses">Race Courses</button> <button class="pill" type="button" id="openChart">Race Marks Map</button></p>
 
   <section class="seasonbar" id="seasonbar" hidden>
     <div class="row-scroll" id="seasons" role="group" aria-label="Season"></div>
@@ -253,8 +288,6 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
     <div class="row-scroll" id="chips" role="group" aria-label="Type of day"></div>
     <div class="toggles">
       <label><input type="checkbox" id="hidePast" checked> Hide past days</label>
-      <label><input type="checkbox" id="showNR"> Show days with no club racing</label>
-      <label><input type="checkbox" id="showWeekly" checked> Weekly sessions</label>
     </div>
     <p class="count" id="count"></p>
   </div>
@@ -288,13 +321,35 @@ dialog#sheet[open] { animation: rise 0.18s ease-out; }
   </div>
 </dialog>
 
+<dialog id="marks" aria-labelledby="marks-title">
+  <div class="marks-in">
+    <div class="marks-top">
+      <h2 id="marks-title">Chart &amp; course cards</h2>
+      <button class="pill" type="button" id="marks-close">Close</button>
+    </div>
+    <div class="marks-pane" id="pane-chart">
+      <div class="chart-box" id="chartBox"></div>
+      <p class="chart-note" id="chartNote"></p>
+      <p class="chart-toggle"><button class="pill" type="button" id="chartSwap"></button></p>
+      <h3 style="font-family:var(--display);font-size:1rem;margin:20px 0 4px;">Marks</h3>
+      <ul class="marklist" id="markList"></ul>
+    </div>
+    <div class="marks-pane" id="pane-courses" hidden>
+      <input class="course-search" id="courseSearch" type="search" placeholder="Search by course code or mark name" autocomplete="off">
+      <div class="wind-select-wrap"><label class="sr" for="windGrid">Wind direction</label><select id="windGrid"></select></div>
+      <p class="hint" id="courseCount"></p>
+      <div id="courseList"></div>
+    </div>
+  </div>
+</dialog>
+
 <script>
 /* ------------------------------------------------------------------
    Settings. Everything else comes from programme.csv, so a new season
    only needs a new programme.csv (same column headings).
 ------------------------------------------------------------------ */
 const CONFIG = {
-  version: "2.5.1", released: "2026-09-20",   // bump both here and in sw.js, and add a line to CHANGELOG.md
+  version: "2.8.0", released: "2026-09-20",   // bump both here and in sw.js, and add a line to CHANGELOG.md
   filePattern: "programme-{year}.csv",  // one file per season: programme-2026.csv, programme-2027.csv, ...
   yearsBack: 1, yearsAhead: 2,          // which years to look for around the current year
   legacyFile: "programme.csv",          // an older single file: used for its own year if no dated file covers it
@@ -303,7 +358,11 @@ const CONFIG = {
   defaultMinutes: 180,                                         // length of a timed calendar entry when no finish time is given
   forecast: { lat: 51.737, lon: 0.715, place: "Heybridge Basin" },
   weekly: ["Mirror sailing", "Beach Club"],   // recurring weekly sessions (can be hidden)
-  bigTidePercentile: 0.9
+  bigTidePercentile: 0.9,
+  coursesFile: "courses-2026.csv",
+  chartMapId: "1VmEGCQAz58bNzscckavTremktJjx304",   // Google My Maps "BSC Race Marks"; iframe needs the map set to "Anyone with the link"
+  chartImage: "chart-2026.jpg",                     // offline fallback, from the printed chart
+  chartImageDate: "March 2026"
 };
 
 const $ = id => document.getElementById(id);
@@ -426,6 +485,8 @@ function groupDay(day, opts) {
 const isBJRC = i => i.kind === "event" && /^BJRC/.test(i.label);
 function hasBJRC(it) { return it.events.some(isBJRC); }
 function eventRank(i) { if (isBJRC(i)) return 3; if (/cruise|cruiser/i.test(i.label)) return 2; if (i.tag === "Open meeting" || /^Open day/i.test(i.label)) return 0; return 1; }
+function isCadetRow(r) { return /cadet/i.test([r.series, r.event, r.training].join(" ")); }
+function dayIsCadet(d) { return d.rows.some(isCadetRow); }
 function sortEvents(list) { return list.map((x, i) => [x, i]).sort((a, b) => eventRank(a[0]) - eventRank(b[0]) || a[1] - b[1]).map(x => x[0]); }
 function forMe(item, sel) {
   if (!sel.length) return true;
@@ -441,7 +502,7 @@ function loadFleets() {
 }
 function saveFleets() { storeSet("bsc-fleets", JSON.stringify(state.fleets)); }
 function visibleItems(day) {
-  const opts = { weekly: $("showWeekly").checked };
+  const opts = { weekly: true };
   const g = groupDay(day, opts);
   const f = state.fleets;
   return { racing: g.racing.filter(i => forMe(i, f)), events: g.events.filter(i => forMe(i, f)), training: g.training, noRacing: g.noRacing };
@@ -513,20 +574,29 @@ function stillOn(d, it) {
   const n = new Date();
   return n.getHours() * 60 + n.getMinutes() <= eventStartMin(d, it) + 8 * 60;
 }
+let NEXT_LIST = [], heroIdx = 0;
 function renderNext() {
-  const box = $("next"); box.textContent = "";
-  const up = DAYS.filter(d => d.date >= today).map(d => ({ d, it: visibleItems(d) })).filter(x => hasContent(x.it) && stillOn(x.d, x.it));
-  box.hidden = false;
-  if (!up.length) {
+  NEXT_LIST = DAYS.filter(d => d.date >= today).map(d => ({ d, it: visibleItems(d) })).filter(x => hasContent(x.it) && stillOn(x.d, x.it));
+  heroIdx = 0;
+  paintNext();
+}
+function heroShow(delta) {
+  if (!NEXT_LIST.length) return;
+  heroIdx = Math.min(NEXT_LIST.length - 1, Math.max(0, heroIdx + delta));
+  paintNext();
+}
+function paintNext() {
+  const box = $("next"); box.textContent = ""; box.hidden = false;
+  if (!NEXT_LIST.length) {
     box.appendChild(el("p", "date-big", "The " + YEAR + " programme has finished."));
     const later = SEASONS.find(x => x.year > YEAR);
     if (later) { box.appendChild(el("p", "", "The " + later.year + " programme is available.")); const b = pillBtn("See " + later.year, () => activateSeason(later)); b.style.marginTop = "10px"; box.appendChild(b); }
     else box.appendChild(el("p", "", "See the club website for the next dates."));
     return;
   }
-  const { d, it } = up[0];
+  const { d, it } = NEXT_LIST[heroIdx];
   const n = daysFrom(d.date);
-  box.appendChild(el("p", "when", "Next on: " + (n === 0 ? "Today" : n === 1 ? "Tomorrow" : "In " + n + " days")));
+  box.appendChild(el("p", "when", (heroIdx > 0 ? "Then: " : "Next on: ") + (n === 0 ? "Today" : n === 1 ? "Tomorrow" : "In " + n + " days")));
   box.appendChild(el("p", "date-big", fmtLong.format(d.date)));
   if (d.gp) { const p = el("p", ""); p.appendChild(el("span", "badge gp", "Grand Prix weekend")); box.appendChild(p); }
   box.appendChild(tokenList(it));
@@ -534,9 +604,21 @@ function renderNext() {
   const st = dayStart(d);
   const f1 = el("div", "fact"); f1.appendChild(el("b", "", it.racing.length ? (st || "TBC") : "No club racing")); f1.appendChild(el("span", "", it.racing.length ? "First start" : (hasBJRC(it) ? "BJRC racing" : (state.fleets.length && st ? "for " + state.fleets.join(", ") : ""))));
   const f2 = el("div", "fact"); f2.appendChild(el("b", "", d.hw ? (d.est ? "≈" : "") + d.hw : "–")); f2.appendChild(el("span", "", "High water" + (isNaN(d.ht) ? "" : ", " + (d.est ? "≈" : "") + d.ht.toFixed(1) + " m")));
-  facts.append(f1, f2, pillBtn("See details", () => openDetail(d, up.map(x => x.d))));
+  facts.append(f1, f2, pillBtn("See details", () => openDetail(d, NEXT_LIST.map(x => x.d))));
   box.appendChild(facts);
+  if (NEXT_LIST.length > 1) box.appendChild(el("p", "next-hint", (heroIdx + 1) + " of " + NEXT_LIST.length + " upcoming — swipe left for more, right to go back"));
 }
+(function initHeroSwipe() {
+  const box = $("next");
+  let sx = 0, sy = 0, dragging = false;
+  box.addEventListener("pointerdown", e => { dragging = true; sx = e.clientX; sy = e.clientY; });
+  box.addEventListener("pointerup", e => {
+    if (!dragging) return; dragging = false;
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) heroShow(dx < 0 ? 1 : -1);
+  });
+  box.addEventListener("pointercancel", () => { dragging = false; });
+})();
 
 /* ---------- controls ---------- */
 function syncPills(box, id) { box.querySelectorAll(".pill").forEach(b => b.setAttribute("aria-pressed", b.dataset.id === id ? "true" : "false")); }
@@ -545,6 +627,7 @@ const CHIPS = [
   { id: "racing", label: "Racing", test: (d, it) => it.racing.length > 0 || hasBJRC(it) },
   { id: "gp", label: "Grand Prix", test: (d, it) => d.gp },
   { id: "training", label: "Training", test: (d, it) => it.training.length > 0 },
+  { id: "cadets", label: "Cadets", test: (d, it) => dayIsCadet(d) },
   { id: "events", label: "Events", test: (d, it) => it.events.some(e => !CONFIG.weekly.includes(e.label) && !CONFIG.weekly.includes(e.tag)) }
 ];
 function weekendRange() {
@@ -617,8 +700,6 @@ function initControls() {
   document.addEventListener("pointerdown", e => { if (!$("searchWrap").contains(e.target)) closeSuggest(); });
   $("fleetReset").addEventListener("click", () => { state.fleets = []; saveFleets(); refreshFleets(); });
   $("hidePast").addEventListener("change", render);
-  $("showNR").addEventListener("change", render);
-  $("showWeekly").addEventListener("change", () => { renderNext(); render(); });
 }
 function fleetHint() {
   $("fleethint").textContent = state.fleets.length ? "Showing " + state.fleets.join(", ") + ". Tap a fleet again to remove it, or Reset for all fleets. Your fleets are shown in red." : "Pick one or more fleets to see only their races and start order.";
@@ -659,7 +740,7 @@ function dayText(d) {
   return [fmtLong.format(d.date), d.gp ? "grand prix gp" : "", ...d.rows.map(r => [r.series, r.nums, r.event, r.training, r.fleet, r.detail, r.start].join(" "))].join(" ").toLowerCase();
 }
 function render() {
-  const q = $("q").value.trim().toLowerCase(), hidePast = $("hidePast").checked, showNR = $("showNR").checked;
+  const q = $("q").value.trim().toLowerCase(), hidePast = $("hidePast").checked;
   const chip = CHIPS.find(c => c.id === state.chip), preset = presets().find(p => p.id === state.preset);
   const shown = [];
   for (const d of DAYS) {
@@ -668,7 +749,7 @@ function render() {
     if (hidePast && d.date < today) continue;
     const it = visibleItems(d);
     const content = hasContent(it);
-    if (!content && !(it.noRacing && showNR) && !isT) continue;
+    if (!content && !isT) continue;
     if (!chip.test(d, it)) continue;
     if (preset && !preset.test(d)) continue;
     if (q && !q.split(/\s+/).every(w => dayText(d).includes(w))) continue;
@@ -683,11 +764,11 @@ function render() {
   if (clickable.length) { lf.hidden = false; const cb = $("listcal"); cb.textContent = "Add " + plural(clickable.length, "day") + " to calendar"; cb.onclick = () => exportDays(clickable, $("calnote")); } else lf.hidden = true;
   const list = $("list"); list.textContent = "";
   if (!shown.length) {
-    const e = el("div", "empty", "Nothing matches. Clear the search, pick another month or fleet, or turn on Show days with no club racing.");
+    const e = el("div", "empty", "Nothing matches. Clear the search, or pick another month or fleet.");
     e.appendChild(document.createElement("br"));
     const b = pillBtn("Reset filters", () => {
       $("q").value = ""; state.month = "all"; state.chip = "all"; state.preset = null; state.fleets = []; saveFleets();
-      $("hidePast").checked = false; $("showNR").checked = false; $("showWeekly").checked = true;
+      $("hidePast").checked = false;
       syncPills($("months"), "all"); syncPills($("chips"), "all"); updateFleetPills(); renderNext(); render();
     });
     b.style.marginTop = "10px"; e.appendChild(b); list.appendChild(e); return;
@@ -783,6 +864,119 @@ function exportDays(days, noteEl, suffix) {
   downloadICS("bsc-sailing-calendar-" + YEAR + who + (suffix || "") + ".ics", buildICS(evs, CONFIG.name + " " + YEAR + (state.fleets.length ? " (" + state.fleets.join(", ") + ")" : "")));
   noteEl.textContent = "Saved " + plural(evs.length, "calendar entry").replace("entrys", "entries") + ". Open the file to add " + (evs.length === 1 ? "it" : "them") + " to your calendar.";
 }
+
+
+/* ---------- Chart & course cards ---------- */
+let COURSES = [], MARKS = [], windUsed = [];
+const FAMILY_ORDER = ["A","AZ","B","BZ","C","CZ","D","DZ","E","EZ","F","FZ","G","GZ","H","HZ"];
+function parseCSVRows(records) { return records; }
+async function loadCourses() {
+  if (COURSES.length) return true;
+  try {
+    const res = await fetch(CONFIG.coursesFile, { cache: "no-cache" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const rows = parseCSV(await res.text());
+    const byCode = new Map();
+    rows.forEach(r => {
+      const code = r["Code"];
+      if (!byCode.has(code)) byCode.set(code, { code, family: r["Family"], wind: r["Wind sector"], distance: parseFloat(r["Distance (miles)"]), marks: [] });
+      byCode.get(code).marks.push({ order: parseInt(r["Order"], 10) || 0, name: r["Mark"], side: r["Side"], round: r["Rounding"] });
+    });
+    COURSES = [...byCode.values()].map(c => ({ ...c, marks: c.marks.sort((a, b) => a.order - b.order) }))
+      .sort((a, b) => FAMILY_ORDER.indexOf(a.family) - FAMILY_ORDER.indexOf(b.family) || a.distance - b.distance);
+    windUsed = FAMILY_ORDER.map(f => COURSES.find(c => c.family === f)).filter(Boolean).map(c => c.wind);
+    MARKS = [...new Set(rows.map(r => r["Mark"]).filter(m => m && m !== "Finish" && m !== "Club Line Gate"))].sort();
+    return true;
+  } catch (e) { return false; }
+}
+
+function windGridLabel(w) {
+  const [a, b] = w.split("-");
+  return a + "–" + b;
+}
+function buildWindGrid() {
+  const sel = $("windGrid"); sel.textContent = "";
+  const opt0 = document.createElement("option"); opt0.value = "all"; opt0.textContent = "All wind directions"; sel.appendChild(opt0);
+  windUsed.forEach(w => { const o = document.createElement("option"); o.value = w; o.textContent = "Wind from " + windGridLabel(w); sel.appendChild(o); });
+  sel.value = marksState.wind;
+}
+const marksState = { wind: "all" };
+function renderCourses() {
+  const q = $("courseSearch").value.trim().toLowerCase();
+  const list = COURSES.filter(c => {
+    if (marksState.wind !== "all" && c.wind !== marksState.wind) return false;
+    if (q) {
+      const hay = (c.code + " " + c.wind + " " + c.marks.map(m => m.name).join(" ")).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  $("courseCount").textContent = plural(list.length, "course") + " shown, out of " + COURSES.length + ".";
+  const box = $("courseList"); box.textContent = "";
+  if (!list.length) { box.appendChild(el("p", "course-empty", "No courses match that.")); return; }
+  list.forEach(c => {
+    const card = el("details", "course-card");
+    const sum = document.createElement("summary");
+    sum.appendChild(el("span", "course-code", c.code));
+    sum.appendChild(el("span", "course-meta", windGridLabel(c.wind) + " · " + c.distance.toFixed(1) + " miles"));
+    card.appendChild(sum);
+    const ul = el("ul", "course-marks");
+    c.marks.forEach(m => {
+      const li = document.createElement("li");
+      li.appendChild(el("span", "", m.name + (m.round === "Full" ? " (round fully)" : "")));
+      if (m.side) li.appendChild(el("span", "side " + m.side, m.side === "P" ? "Port" : "Starboard"));
+      ul.appendChild(li);
+    });
+    card.appendChild(ul); box.appendChild(card);
+  });
+}
+function renderMarkList() {
+  const ul = $("markList"); ul.textContent = "";
+  MARKS.forEach(m => ul.appendChild(el("li", "", m)));
+}
+
+let chartMode = null;   // "live" | "static"
+function setChartMode(mode) {
+  chartMode = mode;
+  const box = $("chartBox"); box.textContent = "";
+  if (mode === "live") {
+    const f = document.createElement("iframe");
+    f.src = "https://www.google.com/maps/d/embed?mid=" + CONFIG.chartMapId;
+    f.loading = "lazy"; f.title = "BSC race marks chart";
+    box.appendChild(f);
+    $("chartNote").textContent = "Live chart. Needs an internet connection.";
+    $("chartSwap").textContent = "Show the printed chart instead";
+    $("chartSwap").onclick = () => setChartMode("static");
+  } else {
+    const img = document.createElement("img");
+    img.src = CONFIG.chartImage; img.alt = "BSC race marks chart, printed " + CONFIG.chartImageDate;
+    box.appendChild(img);
+    $("chartNote").textContent = "Printed chart, " + CONFIG.chartImageDate + ". Works offline.";
+    $("chartSwap").textContent = "Show the live chart instead";
+    $("chartSwap").onclick = () => setChartMode("live");
+  }
+}
+function openMarksDialog(tab) {
+  const dlg = $("marks");
+  $("marks-title").textContent = tab === "courses" ? "Race Courses" : "Race Marks Map";
+  $("pane-chart").hidden = tab !== "chart";
+  $("pane-courses").hidden = tab !== "courses";
+  if (!dlg.open) dlg.showModal();
+  document.body.classList.add("lock");
+  if (tab === "chart" && chartMode === null) setChartMode(navigator.onLine ? "live" : "static");
+  loadCourses().then(ok => {
+    if (tab === "chart") { if (ok) renderMarkList(); return; }
+    if (!ok) { $("courseList").textContent = ""; $("courseList").appendChild(el("p", "course-empty", "The course cards couldn't be loaded. They need an internet connection the first time.")); return; }
+    buildWindGrid(); renderMarkList(); renderCourses();
+  });
+}
+$("openChart").addEventListener("click", () => openMarksDialog("chart"));
+$("openCourses").addEventListener("click", () => openMarksDialog("courses"));
+$("marks-close").addEventListener("click", () => $("marks").close());
+$("marks").addEventListener("click", e => { if (e.target === $("marks")) $("marks").close(); });
+$("marks").addEventListener("close", () => document.body.classList.remove("lock"));
+$("courseSearch").addEventListener("input", renderCourses);
+$("windGrid").addEventListener("change", () => { marksState.wind = $("windGrid").value; renderCourses(); });
 
 /* ---------- day details ---------- */
 const sheet = $("sheet");

@@ -2,6 +2,23 @@
 
 Version numbers are in `CONFIG.version` in `index.html` and `VERSION` in `sw.js`. Keep the two the same, and add a line here for every release. The version is shown at the bottom of the app, with more detail under **Support info**.
 
+## 2.8.0 – 20 Sep 2026
+- Course cards now sort in logical order (A1-A6, AZ1-AZ6, B1-B6, ...) instead of alphabetically by wind sector; the wind-direction dropdown follows the same order.
+- **Race Courses** and **Race Marks Map** are now two separate screens with no shared tab bar, each opening straight to its own content with the matching title.
+- Removed the "Show days with no club racing" tick box (use the Racing filter instead) and the "Weekly sessions" tick box (Mirror sailing and Beach Club now always show, like everything else).
+- The "Next on" card can be swiped left for the next upcoming event and right to go back, with a small "n of N upcoming" hint when there's more than one.
+
+## 2.7.0 – 20 Sep 2026
+- New **Cadets** filter chip (between Training and Events) — shows every day with cadet training, coaching or racing.
+- "Weekly sessions" off now hides those Wednesdays completely, even with "Show days with no club racing" ticked; days with a real event (including on bank holidays) are unaffected.
+- "Chart & course cards" is now two buttons on the home screen — **Race Courses** and **Race Marks Map** — each opening straight to that tab.
+- The club roundel at the top now links to https://blackwatersailingclub.org.uk/.
+
+## 2.6.0 – 20 Sep 2026
+- Added **Chart & course cards**, from the header button.
+  - **Chart:** the club's live "BSC Race Marks" Google My Map when online (an embedded iframe), or the printed chart (`chart-2026.jpg`, March 2026) when offline or on request, with a toggle between the two. A plain list of mark names underneath.
+  - **Course cards:** all 96 printed courses (`courses-2026.csv`), filterable by wind direction sector and searchable by course code or mark name. Each shows its distance and its marks in order, with port/starboard rounding (and "round fully" where the card says so).
+
 ## 2.5.1 – 20 Sep 2026
 - Days with no BSC fleet racing now say "No club racing" (day summary, Next on card, day detail and the tick box), because BJRC may still be racing that day.
 
